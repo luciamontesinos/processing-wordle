@@ -9,12 +9,15 @@
   <script language="javascript" type="text/javascript" src="camera_utils.js"></script>
   <script language="javascript" type="text/javascript" src="control_utils.js"></script>
   <script language="javascript" type="text/javascript" src="drawing_utils.js"></script>
+  <script language="javascript" type="text/javascript" src="game.js"></script>
   <script language="javascript" type="text/javascript" src="hands.js"></script>
   <script language="javascript" type="text/javascript" src="p5.js"></script>
+  <script language="javascript" type="text/javascript" src="slot.js"></script>
   <script language="javascript" type="text/javascript" src="processing_word_puzzle.js"></script>
   <!-- OK, YOU CAN MAKE CHANGES BELOW THIS LINE AGAIN -->
-
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  
+  <script language="javascript" type="text/javascript" src='https://cdn.rawgit.com/naptha/tesseract.js/1.0.10/dist/tesseract.js'></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
@@ -41,8 +44,14 @@ canvas{
 </style>
        
      <div class="container">
-    <video class="input_video"></video>
-    <canvas class="output_canvas" width="0px" height="0px"></canvas>
+   
+   <video hidden class="input_video"></video>
+    <canvas class="output_canvas" width="0px" height="0px"></canvas></div>
+
+    <canvas class="grid_canvas" width="0px" height="0px"></canvas></div>
+
+
+   
     
   </div>
     <script src="sketch.js"></script>
