@@ -38,6 +38,8 @@ let hasCheckedLetter = false;
 let hasCheckedWord = false;
 let guessedLetter = [];
 let letterToShow = '';
+let selectedMenuButton = 0;
+let selectedHelpButton = 0;
 
 
 // CURSOR
@@ -403,6 +405,7 @@ const s2 = (d) => {
         else if (helpButton.contains(hx, hy)) {
           if (handInUse == "Right") {
             if (mode == "move") {
+              selectedHelpButton++;
               // HIDE EVERYTHING, SHOW TUTORIAL
               processLetter.hide();
               deleteLetterButton.hide();
