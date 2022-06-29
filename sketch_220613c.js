@@ -57,6 +57,15 @@ let drawCanvas;
 let tesseractWorker;
 
 
+// REQUESTS
+// var url_string; = window.location.href; //window.location.href
+// var url; = new URL(window.location.href);
+// var token; = url.searchParams.get("token");
+// console.log(token);
+
+// SAVE TOKENS
+
+
 function startGame() {
 
   // Get random word
@@ -648,8 +657,8 @@ const s2 = (d) => {
           image: videoElement
         });
       },
-      width: 0,
-      height: 0,
+      width: 1280,
+      height: 720,
     });
 
     camera.start();
@@ -710,20 +719,49 @@ let drawP5 = new p5(s2, 'canvas_draw');
 
 
 
-
+let cursor;
+let eraser;
 
 const s3 = (p) => {
   p.setup = () => {
     p.createCanvas(document.getElementById('canvas_pointer').offsetWidth, document.documentElement.clientHeight);
-
     p.noStroke();
+    cursor = p.loadImage('cursor.png');
+    eraser = p.loadImage('eraser.png');
   };
 
 
   p.draw = () => {
     p.clear();
     p.fill(0);
-    p.ellipse(hx, hy, 33, 33);
+
+    switch (mode) {
+      case "draw": {
+        p.ellipse(hx, hy, 33, 33);
+        break;
+      }
+      case "delete": {
+        p.image(eraser, hx, hy, 33, 33);
+        break;
+      }
+      case "move": {
+        p.image(cursor, hx, hy, 33, 33);
+        break;
+      }
+      case "confirm": {
+        p.ellipse(hx, hy, 33, 33);
+        break;
+      }
+      case "cancel": {
+        p.ellipse(hx, hy, 33, 33);
+        break;
+      }
+      default: {
+        p.ellipse(hx, hy, 33, 33);
+        break;
+      }
+    }
+
   };
 
 };
