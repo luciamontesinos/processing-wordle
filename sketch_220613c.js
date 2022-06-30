@@ -14,6 +14,8 @@ let gigantLetter;
 
 // GAME CONFIGURATION
 const characters = 'abcdefghijklmnopqrstuvwxyzåæø';
+const charactersWhiteList = 'abcdefghijklmnopqrstuvwxyzåæøABCDEFGHIJKLMNOPQRSTUVWXYZAÅÆØ';
+
 const numberOfLetters = 5;
 const numberOfAttempts = 6;
 const wordsPath = 'words.csv';
@@ -345,34 +347,70 @@ const s2 = (d) => {
         if (processLetter.contains(hx, hy)) {
           if (handInUse == "Right") {
             if (mode == "move") {
+              if (hasCheckedLetter == false) {
 
-              // HIDE EVERYTHING TO PROCESS
-              processLetter.hide();
-              deleteLetterButton.hide();
-              helpButton.hide();
-              menuButton.hide();
-              for (let col = 0; col < numberOfLetters; col++) {
-                currentWordRow[col].hide();
+                // HIDE EVERYTHING TO PROCESS
+                processLetter.hide();
+                deleteLetterButton.hide();
+                helpButton.hide();
+                menuButton.hide();
+                navigateButton.hide();
+                navigateBackButton.hide();
+
+                for (let col = 0; col < numberOfLetters; col++) {
+                  currentWordRow[col].hide();
+                }
+
+                // DRAW DOTS AGAIN
+                d.drawDots();
+
+
+                // // PROCESS LETTER
+                // guessedLetter.push(Tesseract.recognize(drawP5.drawingContext, 'dan', {
+                //   logger: m => console.log(m)
+                // }));
+
+                // PREPROCESS IMAGE 
+                drawP5.filter(d.THRESHOLD);
+
+
+                Tesseract.recognize(
+                  drawP5.drawingContext.canvas, {
+                  lang: 'dan',
+                  tessedit_pageseg_mode: '10',
+                  tessedit_char_whitelist: charactersWhiteList,
+
+
+                }
+                )
+                  .catch(err => {
+                    console.error(err);
+                  })
+                  .then(result => {
+                    // Get Confidence score
+                    console.log(result);
+                    confidence = result.confidence
+
+                    letterToShow = result.text[0];
+
+
+                  })
+
+
+                //{ tessedit_char_whitelist: characters, tessedit_pageseg_mode: 'SINGLE_CHAR' }));
+                // console.log(guessedLetter);
+
+                //confidenceLevel = guessedLetter[0]._resolve.symbols[0].confidence;
+                //letterToShow = guessedLetter[0]._resolve.symbols[0].text;
+                // letterToShow = "A";
+
+                // DEFINE & SHOW THE GIGANT LETTER
+                gigantLetter = new Text(letterToShow, document.getElementById('canvas_draw').offsetWidth / 2 - 200, document.documentElement.clientHeight / 2 + 200, 500, 0, "-", d);
+                gigantLetter.show();
+
+                // DEFINE SUBMIT LETTER EVENT
+                hasCheckedLetter = true;
               }
-
-              // DRAW DOTS AGAIN
-              d.drawDots();
-
-
-              // PROCESS LETTER
-              //guessedLetter.push(Tesseract.recognize(drawP5.drawingContext, 'dan', {tessedit_char_whitelist: characters, tessedit_pageseg_mode:'SINGLE_CHAR'}  ));
-              console.log(guessedLetter);
-
-              //confidenceLevel = guessedLetter[0]._resolve.symbols[0].confidence;
-              //letterToShow = guessedLetter[0]._resolve.symbols[0].text;
-              letterToShow = "A";
-
-              // DEFINE & SHOW THE GIGANT LETTER
-              gigantLetter = new Text(letterToShow, document.getElementById('canvas_draw').offsetWidth / 2 - 200, document.documentElement.clientHeight / 2 + 200, 500, 0, "-", d);
-              gigantLetter.show();
-
-              // DEFINE SUBMIT LETTER EVENT
-              hasCheckedLetter = true;
 
             }
           }
@@ -608,6 +646,7 @@ const s2 = (d) => {
 
 
   d.setup = () => {
+    d.pixelDensity(3.0);
     drawCanvas = d.createCanvas(document.getElementById('canvas_draw').offsetWidth, document.documentElement.clientHeight);
 
     d.background(255);
