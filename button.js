@@ -19,6 +19,7 @@ class Button {
     this.o = o;
     this.p5 = p5;
     this.hidden = true;
+    this.hasExpanded = false;
   }
   show() {
     this.p5.push();
@@ -61,10 +62,19 @@ class Button {
   }
 
   expand() {
+    if (this.hasExpanded == false) {
+      this.hasExpanded = true;
+      this.hide();
+      this.ts = this.ts * 1.5;
+      this.r = this.r * 1.5;
+      this.show();
+    }
+
     // MAKE THE BUTTON BIGGER WHEN SELECTED
   }
 
   hide() {
+
     this.p5.push();
     this.p5.fill(255);
     this.p5.stroke(255);

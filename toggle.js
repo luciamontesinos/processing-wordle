@@ -26,7 +26,7 @@ class Toggle {
         this.p5.fill(this.f);
 
         this.p5.translate(this.x, this.y);
-        this.p5.noStroke();
+        this.p5.stroke(this.s);
         this.p5.textSize(this.ts);
         this.p5.rect(0, 0, this.w, this.h, this.w / 5);
 

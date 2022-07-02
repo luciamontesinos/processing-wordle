@@ -40,8 +40,8 @@ let hasCheckedLetter = false;
 let hasCheckedWord = false;
 let guessedLetter = [];
 let letterToShow = '';
-let selectedMenuButton = 0;
-let selectedHelpButton = 0;
+let selectedMenuButton = false;
+let selectedHelpButton = false;
 
 
 // CURSOR
@@ -303,17 +303,24 @@ const s2 = (d) => {
     }
   };
 
-  // CHECK FINGERS FOR MODE
+  // CHECK FINGERS FOR MODE (NOTE THE Y IS INVERSED)
   d.fingersUp = (landmarks) => {
-    if ((landmarks[0][4].x < landmarks[0][3].x) && (landmarks[0][8].y > landmarks[0][6].y) && (landmarks[0][12].y > landmarks[0][10].y) && (landmarks[0][16].y > landmarks[0][14].y) && (landmarks[0][20].y > landmarks[0][18].y)) {
+    if ((landmarks[0][4].y < landmarks[0][2].y) && (landmarks[0][8].y < landmarks[0][6].y) && (landmarks[0][12].y < landmarks[0][10].y) && (landmarks[0][16].y < landmarks[0][14].y) && (landmarks[0][20].y < landmarks[0][18].y)) {
       return "move";
-    } else if ((landmarks[0][8].y < landmarks[0][10].y) && (landmarks[0][12].y > landmarks[0][10].y) && (landmarks[0][16].y > landmarks[0][14].y) && (landmarks[0][20].y > landmarks[0][18].y)) {
+    }
+
+    // else if ((landmarks[0][8].y < landmarks[0][10].y) && (landmarks[0][12].y > landmarks[0][10].y) && (landmarks[0][16].y > landmarks[0][14].y) && (landmarks[0][20].y > landmarks[0][18].y)) {
+    //   return "draw";
+    // }
+
+    else if ((landmarks[0][8].y < landmarks[0][6].y) && (landmarks[0][7].y < landmarks[0][12].y) && (landmarks[0][7].y < landmarks[0][16].y) && (landmarks[0][7].y < landmarks[0][20].y)) {
       return "draw";
 
-    } else if ((landmarks[0][4].y < landmarks[0][8].y) && (landmarks[0][4].y < landmarks[0][12].y) && (landmarks[0][4].y < landmarks[0][16].y) && (landmarks[0][4].y < landmarks[0][20].y)) {
+
+    } else if ((landmarks[0][4].y < landmarks[0][2].y) && (landmarks[0][3].y < landmarks[0][8].y) && (landmarks[0][3].y < landmarks[0][12].y) && (landmarks[0][3].y < landmarks[0][16].y) && (landmarks[0][3].y < landmarks[0][20].y)) {
       return "confirm";
 
-    } else if ((landmarks[0][4].y > landmarks[0][8].y) && (landmarks[0][4].y > landmarks[0][12].y) && (landmarks[0][4].y > landmarks[0][16].y) && (landmarks[0][4].y > landmarks[0][20].y) && (landmarks[0][8].y > landmarks[0][6].y) && (landmarks[0][12].y > landmarks[0][10].y) && (landmarks[0][16].y > landmarks[0][14].y) && (landmarks[0][20].y > landmarks[0][18].y)) {
+    } else if ((landmarks[0][4].y > landmarks[0][2].y) && (landmarks[0][3].y > landmarks[0][8].y) && (landmarks[0][3].y > landmarks[0][12].y) && (landmarks[0][3].y > landmarks[0][16].y) && (landmarks[0][3].y > landmarks[0][20].y)) {
       return "cancel";
     } else {
       return "unknown";
@@ -429,6 +436,7 @@ const s2 = (d) => {
               deleteLetterButton.show();
               menuButton.show();
               helpButton.show();
+              navigateButton.show();
 
               // PAINT THE LAST WORD AFTER PAINTING 
               for (let col = 0; col < numberOfLetters; col++) {
@@ -449,6 +457,7 @@ const s2 = (d) => {
               deleteLetterButton.hide();
               helpButton.hide();
               menuButton.hide();
+              navigateButton.hide();
               for (let col = 0; col < numberOfLetters; col++) {
                 currentWordRow[col].hide();
               }
@@ -461,16 +470,46 @@ const s2 = (d) => {
         else if (menuButton.contains(hx, hy)) {
           if (handInUse == "Right") {
             if (mode == "move") {
-              // HIDE EVERYTHING, SHOW MENU
 
-              processLetter.hide();
-              deleteLetterButton.hide();
-              helpButton.hide();
-              menuButton.hide();
-              for (let col = 0; col < numberOfLetters; col++) {
-                currentWordRow[col].hide();
+              if (selectedMenuButton == false) {
+
+                selectedMenuButton = true;
+                // HIDE EVERYTHING
+
+                processLetter.hide();
+                deleteLetterButton.hide();
+                helpButton.hide();
+                navigateButton.hide();
+                for (let col = 0; col < numberOfLetters; col++) {
+                  currentWordRow[col].hide();
+                }
+
+                d.background(180);
+                d.drawDots();
+                menuButton.show();
+
+                // SHOW MENU
+                menuContainer.show();
+                newGameButton.show();
+                resumeGameButton.show();
+                changeHandButton.show();
+
+              } else {
+                selectedMenuButton = false;
+                // SHOW EVERYTHING AGAIN
+                d.background(255);
+                d.drawDots();
+                menuButton.show();
+                processLetter.show();
+                deleteLetterButton.show();
+                helpButton.show();
+                navigateButton.show();
+                for (let col = 0; col < numberOfLetters; col++) {
+                  currentWordRow[col].show();
+                }
+
               }
-              // SHOW MENU
+
             }
           }
         }
@@ -492,7 +531,19 @@ const s2 = (d) => {
               // SHOW OTHER SCREEN
               d.toggle();
               navigateBackButton.hide();
+              // Paint all the screen again
+              d.background(255);
+              d.drawDots();
+              menuButton.show();
+              processLetter.show();
+              deleteLetterButton.show();
+              helpButton.show();
               navigateButton.show();
+              for (let col = 0; col < numberOfLetters; col++) {
+                currentWordRow[col].show();
+              }
+
+
             }
           }
         }
@@ -511,135 +562,151 @@ const s2 = (d) => {
             }
 
           }
-          if (mode == "confirm") {
-            // Check what was the event to confirm
-            // if submit letter event
-            if (hasCheckedLetter == true) {
-              // IF THEY ACCEPT THE LETTER
-              gigantLetter.hide();
-
-              // CLEAN SCREEN
-              d.background(255);
-              d.drawDots();
-
-              currentWord[currentLetterWord] = letterToShow;
-              currentMode[currentLetterWord] = "empty";
-              currentLetterWord++;
-              currentMode[currentLetterWord] = "current";
-
-              if (currentLetterWord == numberOfLetters) {
-                hasCheckedWord = true;
-              }
-
-              // SHOW EVERYTHING AGAIN
-              processLetter.show();
-              deleteLetterButton.show();
-              helpButton.show();
-              menuButton.show();
-
-              // MOVE POINTER TO CENTER TO MAKE SURE IT DOESNT SEND AGAIN
-              hx = document.getElementById('canvas_draw').offsetWidth / 2;
-              hy = document.documentElement.clientHeight
-
-              // MAKE SURE IT DOESN'T SEND IT AGAIN
-              hasCheckedLetter = false;
-
-              // PAINT THE LAST LETTER AFTER PAINTING 
-              for (let col = 0; col < numberOfLetters; col++) {
-                currentWordRow[col].show(currentWord[col], currentMode[col]);
-              }
-
-            } else if (hasCheckedWord == true) {
-              hasCheckedWord = false;
-              // IF THEY ACCEPT THE WORD
-              // SUBMIT 
-              // show other screen, 
-              d.toggle();
-
-              navigateButton.hide();
-              navigateBackButton.show();
-              // call check word,
-              console.log(currentWord);
-              wordToCheck = [...currentWord];
-              checkWord();
-              currentAttempt++;
-
-
-              currentWordRow = [];
-              currentWord = ["", "", "", "", "",];
-              currentMode = ["empty", "empty", "empty", "empty", "empty"];
-              currentLetterWord = 0;
-              // restart variables
-
-
-            }
-
-          }
-          if (mode == "cancel") {
-            // Check what was the event to cancel
-            if (hasCheckedLetter == true) {
-              // IF THEY REJECT THE LETTER
-              gigantLetter.hide();
-
-              // CLEAN SCREEN
-              d.background(255);
-              d.drawDots();
-
-              // SHOW EVERYTHING AGAIN
-              processLetter.show();
-              deleteLetterButton.show();
-              helpButton.show();
-              menuButton.show();
-
-              // MOVE POINTER TO CENTER TO MAKE SURE IT DOESN'T SEND IT AGAIN
-              hx = document.getElementById('canvas_draw').offsetWidth / 2;
-              hy = document.documentElement.clientHeight
-
-              // MAKE SURE IT DOESN'T SEND IT AGAIN
-              hasCheckedLetter = false;
-
-              // PAINT THE LAST LETTER AFTER PAINTING 
-              for (let col = 0; col < numberOfLetters; col++) {
-                currentWordRow[col].show(currentWord[col], currentMode[col]);
-              }
-
-
-            } else if (hasCheckedWord == true) {
-              // IF THEY REJECT THE WORD
-              hasCheckedWord = false;
-              //offer to select letter to change
-            }
-          }
-
-
-
-
         } else if (handInUse == "Left") {
-          // DELETE MODE
 
-          // CHECK IF IS NOT DELETING AN ELEMENT
-          if (!processLetter.contains(hx, hy) && !deleteLetterButton.contains(hx, hy) && !helpButton.contains(hx, hy) && !menuButton.contains(hx, hy)) {
-            d.stroke(255);
-            d.strokeWeight(200);
+          // Avoid mistakes
+          if (mode != 'confirm' && mode != 'cancel' & mode != 'draw') {
 
-            if (xp == 0 && yp == 0) {
+
+            // DELETE MODE
+
+            // CHECK IF IS NOT DELETING AN ELEMENT
+            if (processLetter.contains(hx, hy) || deleteLetterButton.contains(hx, hy) || helpButton.contains(hx, hy) || menuButton.contains(hx, hy) || navigateButton.contains(hx, hy) || navigateBackButton.contains(hx, hy)) {
+            }
+
+            else {
+
+              d.stroke(255);
+              d.strokeWeight(200);
+
+              if (xp == 0 && yp == 0) {
+                xp = hx;
+                yp = hy;
+              }
+
+              d.line(xp, yp, hx, hy);
+
               xp = hx;
               yp = hy;
+
+              // PAINT THE GRID AFTER DELETING 
+              d.drawDots();
+              menuButton.show();
+              processLetter.show();
+              deleteLetterButton.show();
+              helpButton.show();
+              navigateButton.show();
+              for (let col = 0; col < numberOfLetters; col++) {
+                currentWordRow[col].show(currentWord[col], currentMode[col]);
+              }
+
             }
-
-            d.line(xp, yp, hx, hy);
-
-            xp = hx;
-            yp = hy;
-
-            // PAINT THE GRID AFTER DELETING 
-            d.drawDots();
-
           }
+
+          xp = hx;
+          yp = hy;
         }
 
-        xp = hx;
-        yp = hy;
+
+        if (mode == "confirm") {
+          // Check what was the event to confirm
+          // if submit letter event
+          if (hasCheckedLetter == true) {
+            // IF THEY ACCEPT THE LETTER
+            gigantLetter.hide();
+
+            // CLEAN SCREEN
+            d.background(255);
+            d.drawDots();
+
+            currentWord[currentLetterWord] = letterToShow;
+            currentMode[currentLetterWord] = "empty";
+            currentLetterWord++;
+            currentMode[currentLetterWord] = "current";
+
+            if (currentLetterWord == numberOfLetters) {
+              hasCheckedWord = true;
+            }
+
+            // SHOW EVERYTHING AGAIN
+            processLetter.show();
+            deleteLetterButton.show();
+            helpButton.show();
+            menuButton.show();
+            navigateButton.show();
+
+            // MOVE POINTER TO CENTER TO MAKE SURE IT DOESNT SEND AGAIN
+            hx = document.getElementById('canvas_draw').offsetWidth / 2;
+            hy = document.documentElement.clientHeight
+
+            // MAKE SURE IT DOESN'T SEND IT AGAIN
+            hasCheckedLetter = false;
+
+            // PAINT THE LAST LETTER AFTER PAINTING 
+            for (let col = 0; col < numberOfLetters; col++) {
+              currentWordRow[col].show(currentWord[col], currentMode[col]);
+            }
+
+          } else if (hasCheckedWord == true) {
+            hasCheckedWord = false;
+            // IF THEY ACCEPT THE WORD
+            // SUBMIT 
+            // show other screen, 
+            d.toggle();
+
+            navigateButton.hide();
+            navigateBackButton.show();
+            // call check word,
+            console.log(currentWord);
+            wordToCheck = [...currentWord];
+            checkWord();
+            currentAttempt++;
+
+
+            currentWordRow = [];
+            currentWord = ["", "", "", "", "",];
+            currentMode = ["empty", "empty", "empty", "empty", "empty"];
+            currentLetterWord = 0;
+            // restart variables
+
+
+          }
+
+        }
+        if (mode == "cancel") {
+          // Check what was the event to cancel
+          if (hasCheckedLetter == true) {
+            // IF THEY REJECT THE LETTER
+            gigantLetter.hide();
+
+            // CLEAN SCREEN
+            d.background(255);
+            d.drawDots();
+
+            // SHOW EVERYTHING AGAIN
+            processLetter.show();
+            deleteLetterButton.show();
+            helpButton.show();
+            menuButton.show();
+            navigateButton.show();
+
+            // MOVE POINTER TO CENTER TO MAKE SURE IT DOESN'T SEND IT AGAIN
+            hx = document.getElementById('canvas_draw').offsetWidth / 2;
+            hy = document.documentElement.clientHeight
+
+            // MAKE SURE IT DOESN'T SEND IT AGAIN
+            hasCheckedLetter = false;
+
+            // PAINT THE LAST LETTER AFTER PAINTING 
+            for (let col = 0; col < numberOfLetters; col++) {
+              currentWordRow[col].show(currentWord[col], currentMode[col]);
+            }
+          } else if (hasCheckedWord == true) {
+            // IF THEY REJECT THE WORD
+            hasCheckedWord = false;
+            //offer to select letter to change
+          }
+        }
       }
     }
   };
@@ -657,9 +724,12 @@ const s2 = (d) => {
     deleteLetterButton = new Button("DELETE\nLETTER", document.getElementById('canvas_draw').offsetWidth / 6, document.documentElement.clientHeight - 50, 200, 28, 'red', 'red', 255, "bl", d);
     menuButton = new Button("MENU", document.getElementById('canvas_draw').offsetWidth - 50, 0, 200, 28, 'blue', 'blue', 255, "tr", d);
     helpButton = new Button("?", document.getElementById('canvas_draw').offsetWidth / 6, 0, 200, 50, 'blue', 'blue', 255, "tl", d);
-    navigateButton = new Toggle(">>", 0, 50, document.getElementById('canvas_draw').offsetWidth / 9, document.documentElement.clientHeight - 100, 60, 250, 'blue', 'blue', "l", d);
-    navigateBackButton = new Toggle("<<", document.getElementById('canvas_draw').offsetWidth - document.getElementById('canvas_draw').offsetWidth / 9, 50, document.getElementById('canvas_draw').offsetWidth / 9, document.documentElement.clientHeight - 100, 60, 250, 'blue', 'blue', "r", d);
-
+    navigateButton = new Toggle(">>", 0, 0, document.getElementById('canvas_draw').offsetWidth / 10, document.documentElement.clientHeight, 60, 250, 'blue', 'blue', "l", d);
+    navigateBackButton = new Toggle("<<", document.getElementById('canvas_draw').offsetWidth - document.getElementById('canvas_draw').offsetWidth / 9, 0, document.getElementById('canvas_draw').offsetWidth / 10, document.documentElement.clientHeight, 60, 'blue', 'blue', 250, "r", d);
+    menuContainer = new Container(document.getElementById('canvas_draw').offsetWidth / 2 - 100, 300, document.getElementById('canvas_draw').offsetWidth / 7, 200, 'blue', 'blue', d);
+    resumeGameButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - 100, 325, "RESUME GAME", document.getElementById('canvas_draw').offsetWidth / 7, document.getElementById('canvas_draw').offsetWidth / 40, d);
+    newGameButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - 100, 375, "NEW GAME", document.getElementById('canvas_draw').offsetWidth / 7, document.getElementById('canvas_draw').offsetWidth / 40, d);
+    changeHandButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - 100, 425, "CHANGE HAND", document.getElementById('canvas_draw').offsetWidth / 7, document.getElementById('canvas_draw').offsetWidth / 40, d);
 
     // DEFINE THE CURRENT WORD BOX
     size = document.getElementById('canvas_draw').offsetWidth / 20;
