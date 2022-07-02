@@ -47,7 +47,8 @@
        You might only need one of these values set. -->
   <style>
     html,
-    body {
+    body,
+    .row {
       padding: 0;
       margin: 0;
       height: 100%;
@@ -84,19 +85,14 @@
 
 <body>
   <div class="row">
-
     <div style="position: relative;">
       <div id='canvas_draw' class="col-12" style="position: absolute; left: 0; top: 0; z-index: 0;">
         <video class="input_video"> </video>
       </div>
-      <div id='canvas_grid' class="col-11 toggle" style="position: absolute; left: 0; top: 0; z-index: 1;"></div>
+      <div id='canvas_grid' class="col-8 toggle" style="position: absolute; left: 0; top: 0; z-index: 1;"></div>
       <div id='canvas_pointer' class="col-12" style="position: absolute; left: 0; top: 0; z-index: 2;"></div>
     </div>
-
   </div>
-
-
-
 </body>
 
 </html>

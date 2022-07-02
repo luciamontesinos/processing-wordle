@@ -46,7 +46,8 @@ class Key {
     this.p5.fill(this.lf);
     this.p5.noStroke();
     this.p5.textSize(this.h / 1.5);
-    this.p5.text(this.l.toUpperCase(), this.h / 3.8, this.h / 1.3);
+    this.p5.textAlign(this.p5.CENTER, this.p5.CENTER);
+    this.p5.text(this.l.toUpperCase(), this.w / 2, this.h / 2);
     this.hidden = false;
     this.p5.pop();
   }

@@ -28,14 +28,17 @@ class Toggle {
         this.p5.translate(this.x, this.y);
         this.p5.stroke(this.s);
         this.p5.textSize(this.ts);
-        this.p5.rect(0, 0, this.w, this.h, this.w / 5);
+        this.p5.rect(-this.w, 0, this.w * 2, this.h, this.w / 2);
+
+        this.p5.textAlign(this.p5.CENTER, this.p5.CENTER);
 
         this.p5.fill(this.tf);
-        if (this.o == "l") {
-            this.p5.text(this.t, this.w / 2 - this.w / 4, this.h / 2 + this.h / 9);
-        } else if (this.o == "r") {
-            this.p5.text(this.t, this.w / 2 - this.w / 4, this.h / 2 + this.h / 9);
-        }
+        // if (this.o == "l") {
+        //     this.p5.text(this.t, this.w / 2 - this.w / 4, this.h / 2 + this.h / 9);
+        // } else if (this.o == "r") {
+        //     this.p5.text(this.t, this.w / 2 - this.w / 4, this.h / 2 + this.h / 9);
+        // }
+        this.p5.text(this.t, this.w / 2, this.h / 2);
         this.hidden = false;
 
         this.p5.pop();
@@ -55,7 +58,7 @@ class Toggle {
     hide() {
         this.p5.push();
         this.p5.fill(255);
-        this.p5.noStroke();
+        this.p5.stroke(255);
 
         this.p5.translate(this.x, this.y);
 

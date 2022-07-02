@@ -8,7 +8,7 @@ let keys = [];
 let menuContainer;
 let canvasContainer;
 let processLetter;
-let deleteLetterButton;
+//let deleteLetterButton;
 let menuButton;
 let gigantLetter;
 
@@ -18,7 +18,7 @@ const charactersWhiteList = 'abcdefghijklmnopqrstuvwxyzåæøABCDEFGHIJKLMNOPQRS
 
 const numberOfLetters = 5;
 const numberOfAttempts = 6;
-const wordsPath = 'words.csv';
+const wordsPath = 'wordlist.csv';
 
 // USEFUL FLAGS
 let currentAttempt = 1;
@@ -73,12 +73,11 @@ let tesseractWorker;
 function startGame() {
 
   // Get random word
-  for (let w = 0; w < 100; w++) {
+  for (let w = 0; w < wordTable.getRowCount(); w++) {
     wordList.push(wordTable.getRow(w).arr[0]);
-
   }
 
-  let rand = Math.floor(Math.random(100));
+  let rand = Math.floor(Math.random() * (wordTable.getRowCount() + 1));
   wordToGuess = wordTable.getString(rand, 0);
   console.log(wordToGuess);
 
@@ -95,7 +94,6 @@ function endGame() {
   // Stop timer
   if (win == true) {
     finalMessage = "Congratulations! you guessed the word.\n Total attempts:" + String(numberOfAttempts);
-
   }
   else {
     finalMessage = "The word was " + wordToGuess + ". Better luck next time!";
@@ -199,7 +197,7 @@ const s1 = (g) => {
     size = document.getElementById('canvas_grid').offsetWidth / 20;
     for (let row = 0; row < numberOfAttempts; row++) {
       slots.push([]);
-      y = row * (size + size / 4) + canvasWidth / 8;
+      y = row * (size + size / 4) + canvasHeight / 4;
       for (let col = 0; col < numberOfLetters; col++) {
         x = canvasWidth / 3 + col * 1.2 * size;
         slots[row].push(new Slot(x, y, size, row, col, g));
@@ -211,20 +209,20 @@ const s1 = (g) => {
     //  DEFINE KEYBOARD (IN 3 COLUMNS) 
     for (let i = 0; i < 10; i++) {
       letter = characters.charAt(i);
-      x = keySize / 2 + canvasWidth / 9;
-      y = keySize / 2 + canvasWidth / 8 + i * keySize;
+      x = 1 * (keySize + keySize / 4) + canvasWidth / 9;
+      y = canvasHeight / 4 + i * (keySize + keySize / 4);
       keys.push(new Key(x, y, letter, keySize, keySize, g));
     }
     for (let i = 10; i < 20; i++) {
       letter = characters.charAt(i);
-      x = keySize + keySize / 2 + canvasWidth / 9;
-      y = keySize / 2 + canvasWidth / 8 + (i - 10) * keySize;
+      x = 2 * (keySize + keySize / 4) + canvasWidth / 9;
+      y = canvasHeight / 4 + (i - 10) * (keySize + keySize / 4);
       keys.push(new Key(x, y, letter, keySize, keySize, g));
     }
     for (let i = 20; i <= characters.length; i++) {
       letter = characters.charAt(i);
-      x = 2 * keySize + keySize / 2 + canvasWidth / 9
-      y = keySize / 2 + canvasWidth / 8 + (i - 20) * keySize;
+      x = 3 * (keySize + keySize / 4) + canvasWidth / 9
+      y = canvasHeight / 4 + (i - 20) * (keySize + keySize / 4);
       keys.push(new Key(x, y, letter, keySize, keySize, g));
     }
 
@@ -250,32 +248,26 @@ const s1 = (g) => {
 
   };
 
-  g.mouseClicked = () => {
-    if (!drawMode) {
-      console.log("Inside toggle");
-      document.getElementById("canvas_grid").classList.toggle("toggle");
-      drawMode = true;
-    }
-    //else {
-    //  document.getElementById("canvas_grid").classList.remove('col-12');
-    //  document.getElementById("canvas_grid").classList.add('col-0');
-    //  document.getElementById("canvas_draw").classList.remove('col-0');
-    //  document.getElementById("canvas_draw").classList.add('col-12');
-    //}
+  // g.mouseClicked = () => {
+  //   if (!drawMode) {
+  //     console.log("Inside toggle");
+  //     document.getElementById("canvas_grid").classList.toggle("toggle");
+  //     drawMode = true;
+  //   }
+  //   //else {
+  //   //  document.getElementById("canvas_grid").classList.remove('col-12');
+  //   //  document.getElementById("canvas_grid").classList.add('col-0');
+  //   //  document.getElementById("canvas_draw").classList.remove('col-0');
+  //   //  document.getElementById("canvas_draw").classList.add('col-12');
+  //   //}
 
-    //// ChANGE MODE
-    //drawMode = !drawMode;
+  //   //// ChANGE MODE
+  //   //drawMode = !drawMode;
 
-    // PAINT ALL THE ELEMENTS AGAIN
-    g.setup();
-  };
+  //   // PAINT ALL THE ELEMENTS AGAIN
+  //   g.setup();
+  // };
 };
-
-
-
-
-
-
 
 
 
@@ -309,20 +301,19 @@ const s2 = (d) => {
       return "move";
     }
 
-    // else if ((landmarks[0][8].y < landmarks[0][10].y) && (landmarks[0][12].y > landmarks[0][10].y) && (landmarks[0][16].y > landmarks[0][14].y) && (landmarks[0][20].y > landmarks[0][18].y)) {
-    //   return "draw";
-    // }
-
     else if ((landmarks[0][8].y < landmarks[0][6].y) && (landmarks[0][7].y < landmarks[0][12].y) && (landmarks[0][7].y < landmarks[0][16].y) && (landmarks[0][7].y < landmarks[0][20].y)) {
       return "draw";
-
 
     } else if ((landmarks[0][4].y < landmarks[0][2].y) && (landmarks[0][3].y < landmarks[0][8].y) && (landmarks[0][3].y < landmarks[0][12].y) && (landmarks[0][3].y < landmarks[0][16].y) && (landmarks[0][3].y < landmarks[0][20].y)) {
       return "confirm";
 
     } else if ((landmarks[0][4].y > landmarks[0][2].y) && (landmarks[0][3].y > landmarks[0][8].y) && (landmarks[0][3].y > landmarks[0][12].y) && (landmarks[0][3].y > landmarks[0][16].y) && (landmarks[0][3].y > landmarks[0][20].y)) {
       return "cancel";
-    } else {
+    }
+    // else if ((landmarks[0][8].y > landmarks[0][6].y) && (landmarks[0][12].y > landmarks[0][10].y) && (landmarks[0][16].y > landmarks[0][14].y) && (landmarks[0][20].y > landmarks[0][18].y)) {
+    //   return "click";
+    //} 
+    else {
       return "unknown";
     }
   };
@@ -358,11 +349,11 @@ const s2 = (d) => {
 
                 // HIDE EVERYTHING TO PROCESS
                 processLetter.hide();
-                deleteLetterButton.hide();
+                //deleteLetterButton.hide();
                 helpButton.hide();
                 menuButton.hide();
                 navigateButton.hide();
-                navigateBackButton.hide();
+                //navigateBackButton.hide();
 
                 for (let col = 0; col < numberOfLetters; col++) {
                   currentWordRow[col].hide();
@@ -371,23 +362,17 @@ const s2 = (d) => {
                 // DRAW DOTS AGAIN
                 d.drawDots();
 
-
-                // // PROCESS LETTER
-                // guessedLetter.push(Tesseract.recognize(drawP5.drawingContext, 'dan', {
-                //   logger: m => console.log(m)
-                // }));
-
                 // PREPROCESS IMAGE 
+                drawP5.filter(d.DILATE);
+                drawP5.filter(d.DILATE);
+                drawP5.filter(d.DILATE);
                 drawP5.filter(d.THRESHOLD);
-
 
                 Tesseract.recognize(
                   drawP5.drawingContext.canvas, {
                   lang: 'dan',
                   tessedit_pageseg_mode: '10',
-                  tessedit_char_whitelist: charactersWhiteList,
-
-
+                  tessedit_char_whitelist: charactersWhiteList
                 }
                 )
                   .catch(err => {
@@ -401,60 +386,90 @@ const s2 = (d) => {
                     letterToShow = result.text[0];
 
 
-                  })
 
 
-                //{ tessedit_char_whitelist: characters, tessedit_pageseg_mode: 'SINGLE_CHAR' }));
-                // console.log(guessedLetter);
+                    //{ tessedit_char_whitelist: characters, tessedit_pageseg_mode: 'SINGLE_CHAR' }));
+                    // console.log(guessedLetter);
 
-                //confidenceLevel = guessedLetter[0]._resolve.symbols[0].confidence;
-                //letterToShow = guessedLetter[0]._resolve.symbols[0].text;
-                // letterToShow = "A";
+                    //confidenceLevel = guessedLetter[0]._resolve.symbols[0].confidence;
+                    //letterToShow = guessedLetter[0]._resolve.symbols[0].text;
+                    // letterToShow = "A";
 
-                // DEFINE & SHOW THE GIGANT LETTER
-                gigantLetter = new Text(letterToShow, document.getElementById('canvas_draw').offsetWidth / 2 - 200, document.documentElement.clientHeight / 2 + 200, 500, 0, "-", d);
-                gigantLetter.show();
+                    if (charactersWhiteList.includes(letterToShow)) {
+                      // DEFINE & SHOW THE GIGANT LETTER
+                      gigantLetter = new Text(letterToShow, document.getElementById('canvas_draw').offsetWidth / 2 - 200, document.documentElement.clientHeight / 2 + 200, 500, 0, "-", d);
+                      gigantLetter.show();
 
-                // DEFINE SUBMIT LETTER EVENT
-                hasCheckedLetter = true;
+                      // DEFINE SUBMIT LETTER EVENT
+                      hasCheckedLetter = true;
+                    } else {
+
+                      // SHOW MESSAGE SAYING AN ERROR HAPPENED
+                      console.log("Opps, an error occurred and the etter could not be recognized");
+                      // ACT AS IF THEY REJECTED THE LETTER
+
+                      // CLEAN SCREEN
+                      d.background(255);
+                      d.drawDots();
+
+                      // SHOW EVERYTHING AGAIN
+                      processLetter.show();
+                      //deleteLetterButton.show();
+                      helpButton.show();
+                      menuButton.show();
+                      navigateButton.show();
+
+                      // MOVE POINTER TO CENTER TO MAKE SURE IT DOESN'T SEND IT AGAIN
+                      hx = document.getElementById('canvas_draw').offsetWidth / 2;
+                      hy = document.documentElement.clientHeight
+
+                      // MAKE SURE IT DOESN'T SEND IT AGAIN
+                      hasCheckedLetter = true;
+
+                      // PAINT THE LAST LETTER AFTER PAINTING 
+                      for (let col = 0; col < numberOfLetters; col++) {
+                        currentWordRow[col].show(currentWord[col], currentMode[col]);
+                      }
+                    }
+                  }
+                  )
               }
-
             }
           }
         }
 
 
-        else if (deleteLetterButton.contains(hx, hy)) {
-          if (handInUse == "Right") {
-            if (mode == "move") {
+        // else if (deleteLetterButton.contains(hx, hy)) {
+        //   if (handInUse == "Right") {
+        //     if (mode == "move") {
 
-              // DELETE CANVAS AND DRAW EVERYTHING AGAIN
+        //       // DELETE CANVAS AND DRAW EVERYTHING AGAIN
 
-              d.background(255);
-              d.drawDots();
-              processLetter.show();
-              deleteLetterButton.show();
-              menuButton.show();
-              helpButton.show();
-              navigateButton.show();
+        //       d.background(255);
+        //       d.drawDots();
+        //       processLetter.show();
+        //       deleteLetterButton.show();
+        //       menuButton.show();
+        //       helpButton.show();
+        //       navigateButton.show();
 
-              // PAINT THE LAST WORD AFTER PAINTING 
-              for (let col = 0; col < numberOfLetters; col++) {
-                if (currentLetterWord == col) {
-                  currentMode[col] = "current";
-                }
-                currentWordRow[col].show(currentWord[col], currentMode[col]);
-              }
-            }
-          }
-        }
+        //       // PAINT THE LAST WORD AFTER PAINTING 
+        //       for (let col = 0; col < numberOfLetters; col++) {
+        //         if (currentLetterWord == col) {
+        //           currentMode[col] = "current";
+        //         }
+        //         currentWordRow[col].show(currentWord[col], currentMode[col]);
+        //       }
+        //     }
+        //   }
+        // }
         else if (helpButton.contains(hx, hy)) {
           if (handInUse == "Right") {
             if (mode == "move") {
-              selectedHelpButton++;
+              selectedHelpButton = true;
               // HIDE EVERYTHING, SHOW TUTORIAL
               processLetter.hide();
-              deleteLetterButton.hide();
+              //deleteLetterButton.hide();
               helpButton.hide();
               menuButton.hide();
               navigateButton.hide();
@@ -477,7 +492,7 @@ const s2 = (d) => {
                 // HIDE EVERYTHING
 
                 processLetter.hide();
-                deleteLetterButton.hide();
+                //deleteLetterButton.hide();
                 helpButton.hide();
                 navigateButton.hide();
                 for (let col = 0; col < numberOfLetters; col++) {
@@ -501,7 +516,7 @@ const s2 = (d) => {
                 d.drawDots();
                 menuButton.show();
                 processLetter.show();
-                deleteLetterButton.show();
+                // deleteLetterButton.show();
                 helpButton.show();
                 navigateButton.show();
                 for (let col = 0; col < numberOfLetters; col++) {
@@ -536,7 +551,7 @@ const s2 = (d) => {
               d.drawDots();
               menuButton.show();
               processLetter.show();
-              deleteLetterButton.show();
+              //deleteLetterButton.show();
               helpButton.show();
               navigateButton.show();
               for (let col = 0; col < numberOfLetters; col++) {
@@ -566,15 +581,11 @@ const s2 = (d) => {
 
           // Avoid mistakes
           if (mode != 'confirm' && mode != 'cancel' & mode != 'draw') {
-
-
             // DELETE MODE
 
             // CHECK IF IS NOT DELETING AN ELEMENT
-            if (processLetter.contains(hx, hy) || deleteLetterButton.contains(hx, hy) || helpButton.contains(hx, hy) || menuButton.contains(hx, hy) || navigateButton.contains(hx, hy) || navigateBackButton.contains(hx, hy)) {
-            }
-
-            else {
+            if (processLetter.contains(hx, hy) || helpButton.contains(hx, hy) || menuButton.contains(hx, hy) || navigateButton.contains(hx, hy) || navigateBackButton.contains(hx, hy)) {
+            } else {
 
               d.stroke(255);
               d.strokeWeight(200);
@@ -593,7 +604,7 @@ const s2 = (d) => {
               d.drawDots();
               menuButton.show();
               processLetter.show();
-              deleteLetterButton.show();
+              //deleteLetterButton.show();
               helpButton.show();
               navigateButton.show();
               for (let col = 0; col < numberOfLetters; col++) {
@@ -630,7 +641,7 @@ const s2 = (d) => {
 
             // SHOW EVERYTHING AGAIN
             processLetter.show();
-            deleteLetterButton.show();
+            // deleteLetterButton.show();
             helpButton.show();
             menuButton.show();
             navigateButton.show();
@@ -685,7 +696,7 @@ const s2 = (d) => {
 
             // SHOW EVERYTHING AGAIN
             processLetter.show();
-            deleteLetterButton.show();
+            //deleteLetterButton.show();
             helpButton.show();
             menuButton.show();
             navigateButton.show();
@@ -720,12 +731,12 @@ const s2 = (d) => {
     currentWord = [];
 
     // DEFINE THE BUTTONS
-    processLetter = new Button("PROCESS\nLETTER", document.getElementById('canvas_draw').offsetWidth - 50, document.documentElement.clientHeight - 50, 200, 28, 'green', 'green', 255, "br", d);
-    deleteLetterButton = new Button("DELETE\nLETTER", document.getElementById('canvas_draw').offsetWidth / 6, document.documentElement.clientHeight - 50, 200, 28, 'red', 'red', 255, "bl", d);
-    menuButton = new Button("MENU", document.getElementById('canvas_draw').offsetWidth - 50, 0, 200, 28, 'blue', 'blue', 255, "tr", d);
-    helpButton = new Button("?", document.getElementById('canvas_draw').offsetWidth / 6, 0, 200, 50, 'blue', 'blue', 255, "tl", d);
+    processLetter = new Button("PROCESS\nLETTER", document.getElementById('canvas_draw').offsetWidth - 150, document.documentElement.clientHeight - 150, 200, 28, 'green', 'green', 255, "br", d);
+    //deleteLetterButton = new Button("DELETE\nLETTER", 300, document.documentElement.clientHeight - 150, 200, 28, 'red', 'red', 255, "bl", d);
+    menuButton = new Button("MENU", document.getElementById('canvas_draw').offsetWidth - 150, 150, 200, 28, 'blue', 'blue', 255, "tr", d);
+    helpButton = new Button("HELP", 300, 150, 200, 50, 'blue', 'blue', 255, "tl", d);
     navigateButton = new Toggle(">>", 0, 0, document.getElementById('canvas_draw').offsetWidth / 10, document.documentElement.clientHeight, 60, 250, 'blue', 'blue', "l", d);
-    navigateBackButton = new Toggle("<<", document.getElementById('canvas_draw').offsetWidth - document.getElementById('canvas_draw').offsetWidth / 9, 0, document.getElementById('canvas_draw').offsetWidth / 10, document.documentElement.clientHeight, 60, 'blue', 'blue', 250, "r", d);
+    navigateBackButton = new Toggle("<<", document.getElementById('canvas_draw').offsetWidth - document.getElementById('canvas_draw').offsetWidth / 3, 0, document.getElementById('canvas_draw').offsetWidth / 10, document.documentElement.clientHeight, 60, 'blue', 'blue', 250, "r", d);
     menuContainer = new Container(document.getElementById('canvas_draw').offsetWidth / 2 - 100, 300, document.getElementById('canvas_draw').offsetWidth / 7, 200, 'blue', 'blue', d);
     resumeGameButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - 100, 325, "RESUME GAME", document.getElementById('canvas_draw').offsetWidth / 7, document.getElementById('canvas_draw').offsetWidth / 40, d);
     newGameButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - 100, 375, "NEW GAME", document.getElementById('canvas_draw').offsetWidth / 7, document.getElementById('canvas_draw').offsetWidth / 40, d);
@@ -735,7 +746,7 @@ const s2 = (d) => {
     size = document.getElementById('canvas_draw').offsetWidth / 20;
     y = document.documentElement.clientHeight - 2 * size;
     for (let col = 0; col < numberOfLetters; col++) {
-      x = document.getElementById('canvas_draw').offsetWidth / 2 - numberOfLetters / 2 * 1.2 * size + col * 1.2 * size;
+      x = (document.getElementById('canvas_draw').offsetWidth + 150) / 2 - numberOfLetters / 2 * 1.2 * size + col * 1.2 * size;
       currentWordRow.push(new Slot(x, y, size, 0, col, d));
     }
 
@@ -785,7 +796,7 @@ const s2 = (d) => {
     hands.onResults(d.onResults);
     // PAINT THE BUTTONS AFTER PAINTING
     processLetter.show();
-    deleteLetterButton.show();
+    //deleteLetterButton.show();
     menuButton.show();
     helpButton.show();
     navigateButton.show();

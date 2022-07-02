@@ -11,7 +11,7 @@ class Button {
     this.x = x;
     this.y = y;
     this.r = r;
-    this.ts = ts;
+    this.ts = r / 6;
     this.t = t;
     this.f = f;
     this.s = s;
@@ -29,24 +29,27 @@ class Button {
     this.p5.strokeWeight(this.s);
     this.p5.textSize(this.ts);
     this.p5.circle(0, 0, this.r);
+    this.p5.textAlign(this.p5.CENTER, this.p5.CENTER);
 
     this.p5.fill(this.tf);
-    if (this.o == "bl") {
-      this.p5.text(this.t, -this.r / 6, -this.r / 8);
-    } else if (this.o == "br") {
-      this.p5.text(this.t, -this.r / 3, -this.r / 8);
-    } else if (this.o == "bc") {
-      this.p5.text(this.t, -this.r / 8, -this.r / 8);
-    }
-    else if (this.o == "tl") {
-      this.p5.text(this.t, -this.r / 4, +this.r / 4);
-    }
-    else if (this.o == "tr") {
-      this.p5.text(this.t, -this.r / 4, +this.r / 4);
-    }
-    else if (this.o == "tc") {
-      this.p5.text(this.t, -this.r / 6, +this.r / 3);
-    }
+    this.p5.text(this.t, 0, 0);
+
+    // if (this.o == "bl") {
+    //   this.p5.text(this.t, -this.r / 6, -this.r / 8);
+    // } else if (this.o == "br") {
+    //   this.p5.text(this.t, -this.r / 3, -this.r / 8);
+    // } else if (this.o == "bc") {
+    //   this.p5.text(this.t, -this.r / 8, -this.r / 8);
+    // }
+    // else if (this.o == "tl") {
+    //   this.p5.text(this.t, -this.r / 4, +this.r / 4);
+    // }
+    // else if (this.o == "tr") {
+    //   this.p5.text(this.t, -this.r / 4, +this.r / 4);
+    // }
+    // else if (this.o == "tc") {
+    //   this.p5.text(this.t, -this.r / 6, +this.r / 3);
+    // }
     this.hidden = false;
 
     this.p5.pop();

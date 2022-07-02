@@ -64,7 +64,8 @@ class Slot {
     this.p5.fill(this.lf);
     this.p5.noStroke();
     this.p5.textSize(this.p5.abs(this.h / 1.5));
-    this.p5.text(letter, this.w / 4, this.h / 1.5);
+    this.p5.textAlign(this.p5.CENTER, this.p5.CENTER);
+    this.p5.text(letter, this.w / 2, this.h / 2);
     this.hidden = false;
     this.p5.pop();
   }
