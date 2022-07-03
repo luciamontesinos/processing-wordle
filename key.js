@@ -9,6 +9,7 @@ class Key {
     this.p5 = p5;
     this.hidden = true;
     this.m = "empty";
+    this.ts = 0;
 
   }
   show(mode) {
@@ -16,24 +17,37 @@ class Key {
     this.m = mode;
 
     if (this.m == "correct") {
-      this.f = 'green';
+      this.f = [76, 136, 37];
       this.lf = 'white';
+      this.ts = this.h / 1.5;
     }
 
     else if (this.m == "semi") {
-      this.f = 'yellow';
+      this.f = [223, 174, 0];
       this.lf = 'white';
+      this.ts = this.h / 1.5;
     }
 
     else if (this.m == "error") {
-      this.f = 'gray';
+      this.f = 127;
       this.lf = 'white';
+      this.ts = this.h / 1.5;
     }
+
+    else if (this.m == "menuButton") {
+      this.f = 127;
+      this.lf = 'white';
+      this.ts = this.h / 5;
+
+    }
+
+
 
     // DEFAULT EMPTY
     else {
-      this.f = 'white';
+      this.f = 223;
       this.lf = 'black';
+      this.ts = this.h / 1.5;
     }
 
 
@@ -45,7 +59,7 @@ class Key {
     this.p5.rect(0, 0, this.w, this.h, this.h / 5);
     this.p5.fill(this.lf);
     this.p5.noStroke();
-    this.p5.textSize(this.h / 1.5);
+    this.p5.textSize(this.ts);
     this.p5.textAlign(this.p5.CENTER, this.p5.CENTER);
     this.p5.text(this.l.toUpperCase(), this.w / 2, this.h / 2);
     this.hidden = false;

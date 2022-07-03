@@ -20,32 +20,37 @@ class Slot {
     this.ta = 3.14 * (6 - row);
     this.p5 = p5;
     this.hidden = true;
+    this.s = 127;
   }
   show(letter, mode) {
     this.l = letter;
     this.m = mode;
 
     if (this.m == "current") {
-      this.sw = 10;
-      this.f = 'white';
-      this.lf = 'black';
+      this.sw = 8;
+      this.f = [230, 242, 248];
+      this.lf = [0, 101, 152];
+      this.s = [0, 101, 152];
     }
     else if (this.m == "correct") {
       this.sw = 3;
       this.f = 'green';
       this.lf = 'white';
+      this.s = 127;
     }
 
     else if (this.m == "semi") {
       this.sw = 3;
       this.f = 'yellow';
       this.lf = 'white';
+      this.s = 127;
     }
 
     else if (this.m == "error") {
       this.sw = 3;
       this.f = 'gray';
       this.lf = 'white';
+      this.s = 127;
     }
 
     // DEFAULT EMPTY
@@ -53,12 +58,13 @@ class Slot {
       this.sw = 3;
       this.f = 'white';
       this.lf = 'black';
+      this.s = 127;
     }
 
     this.p5.push();
     this.p5.translate(this.x, this.y);
     this.p5.fill(this.f);
-    this.p5.stroke('black');
+    this.p5.stroke(this.s);
     this.p5.strokeWeight(this.sw);
     this.p5.rect(0, 0, this.size, this.size, this.size / 5);
     this.p5.fill(this.lf);

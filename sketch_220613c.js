@@ -11,6 +11,17 @@ let processLetter;
 //let deleteLetterButton;
 let menuButton;
 let gigantLetter;
+let handlee;
+let kinetip;
+let loadingGif;
+let arrow;
+let bottomMessage;
+let confirmImage;
+let rejectImage;
+let resumeGameButton;
+let newGameButton;
+let changeHandButton;
+
 
 // GAME CONFIGURATION
 const characters = 'abcdefghijklmnopqrstuvwxyzåæø';
@@ -42,6 +53,12 @@ let guessedLetter = [];
 let letterToShow = '';
 let selectedMenuButton = false;
 let selectedHelpButton = false;
+let openWindow = false;
+let niceTry = "Nice try! Let's go for another word";
+let systemRecognice = "The system has recognized the following letter";
+let isThisLetter = "Is this the letter you drew?";
+
+
 
 
 // CURSOR
@@ -164,6 +181,8 @@ function checkWord() {
 const s1 = (g) => {
   g.preload = () => {
     wordTable = g.loadTable(wordsPath);
+    kinetip = g.loadImage('Kinetip.png');
+    arrow = g.loadImage('arrow.png');
   }
 
   g.drawGrid = () => {
@@ -183,6 +202,16 @@ const s1 = (g) => {
       keys[letter].show(currentKeyMode[letter]);
     }
 
+    //Show message
+    bottomMessage.show(niceTry);
+
+    //Show arrow
+    g.image(arrow, canvasWidth / 2.5 * 2, document.documentElement.clientHeight / 10 * 8.3)
+
+    // SHOW LOGO
+    //g.imageMode(g.CENTER);
+    g.image(kinetip, canvasWidth / 2.5 + document.getElementById('canvas_grid').offsetWidth / 15 * 1.2, document.documentElement.clientHeight / 18);
+
   };
   g.setup = () => {
     keys = [];
@@ -194,37 +223,41 @@ const s1 = (g) => {
     g.background(250);
 
     // DEFINE WORD CELLS
-    size = document.getElementById('canvas_grid').offsetWidth / 20;
+    size = document.getElementById('canvas_grid').offsetWidth / 15;
     for (let row = 0; row < numberOfAttempts; row++) {
       slots.push([]);
-      y = row * (size + size / 4) + canvasHeight / 4;
+      y = row * (size + size / 4) + canvasHeight / 5;
       for (let col = 0; col < numberOfLetters; col++) {
-        x = canvasWidth / 3 + col * 1.2 * size;
+        x = canvasWidth / 2.5 + col * 1.2 * size;
         slots[row].push(new Slot(x, y, size, row, col, g));
       }
     }
 
-    keySize = document.getElementById('canvas_grid').offsetWidth / 35;
+    keySize = document.getElementById('canvas_grid').offsetWidth / 26;
 
     //  DEFINE KEYBOARD (IN 3 COLUMNS) 
     for (let i = 0; i < 10; i++) {
       letter = characters.charAt(i);
-      x = 1 * (keySize + keySize / 4) + canvasWidth / 9;
-      y = canvasHeight / 4 + i * (keySize + keySize / 4);
+      x = 1 * (keySize + keySize / 4) + canvasWidth / 10;
+      y = canvasHeight / 4 + i * (keySize + keySize / 5);
       keys.push(new Key(x, y, letter, keySize, keySize, g));
     }
     for (let i = 10; i < 20; i++) {
       letter = characters.charAt(i);
-      x = 2 * (keySize + keySize / 4) + canvasWidth / 9;
-      y = canvasHeight / 4 + (i - 10) * (keySize + keySize / 4);
+      x = 2 * (keySize + keySize / 4) + canvasWidth / 10;
+      y = canvasHeight / 4 + (i - 10) * (keySize + keySize / 5);
       keys.push(new Key(x, y, letter, keySize, keySize, g));
     }
     for (let i = 20; i <= characters.length; i++) {
       letter = characters.charAt(i);
-      x = 3 * (keySize + keySize / 4) + canvasWidth / 9
-      y = canvasHeight / 4 + (i - 20) * (keySize + keySize / 4);
+      x = 3 * (keySize + keySize / 4) + canvasWidth / 10;
+      y = canvasHeight / 4 + (i - 20) * (keySize + keySize / 5);
       keys.push(new Key(x, y, letter, keySize, keySize, g));
     }
+
+    //t, x, y, ts, f, o, p5
+    bottomMessage = new Text("", canvasWidth / 2.5, document.documentElement.clientHeight / 10 * 9, 25, 'black', '-', g);
+
 
     //// DEFINE CONTAINERS
     //menuContainer = new Container(canvasWidth / 3, canvasWidth / 8, canvasWidth / 2, 2 * canvasHeight / 3, 200, 150, g);
@@ -275,6 +308,12 @@ let gridP5 = new p5(s1, 'canvas_grid');
 
 const s2 = (d) => {
   d.preload = () => {
+    handlee = d.loadFont('Handlee-Regular.ttf');
+    //loadingGif = d.createImg('Loading.gif');
+    //loadingGif.position(document.getElementById('canvas_draw').offsetWidth, document.documentElement.clientHeight);
+    confirmImage = d.loadImage('confirm.png');
+    rejectImage = d.loadImage("reject.png");
+
   };
 
   d.drawDots = () => {
@@ -310,9 +349,9 @@ const s2 = (d) => {
     } else if ((landmarks[0][4].y > landmarks[0][2].y) && (landmarks[0][3].y > landmarks[0][8].y) && (landmarks[0][3].y > landmarks[0][12].y) && (landmarks[0][3].y > landmarks[0][16].y) && (landmarks[0][3].y > landmarks[0][20].y)) {
       return "cancel";
     }
-    // else if ((landmarks[0][8].y > landmarks[0][6].y) && (landmarks[0][12].y > landmarks[0][10].y) && (landmarks[0][16].y > landmarks[0][14].y) && (landmarks[0][20].y > landmarks[0][18].y)) {
-    //   return "click";
-    //} 
+    else if ((landmarks[0][8].y > landmarks[0][6].y) && (landmarks[0][12].y > landmarks[0][10].y) && (landmarks[0][16].y > landmarks[0][14].y) && (landmarks[0][20].y > landmarks[0][18].y)) {
+      return "click";
+    }
     else {
       return "unknown";
     }
@@ -344,7 +383,7 @@ const s2 = (d) => {
 
         if (processLetter.contains(hx, hy)) {
           if (handInUse == "Right") {
-            if (mode == "move") {
+            if (mode == "click") {
               if (hasCheckedLetter == false) {
 
                 // HIDE EVERYTHING TO PROCESS
@@ -367,6 +406,7 @@ const s2 = (d) => {
                 drawP5.filter(d.DILATE);
                 drawP5.filter(d.DILATE);
                 drawP5.filter(d.THRESHOLD);
+                //loadingGif.position(document.getElementById('canvas_draw').offsetWidth / 2, document.documentElement.clientHeight / 2);
 
                 Tesseract.recognize(
                   drawP5.drawingContext.canvas, {
@@ -375,10 +415,15 @@ const s2 = (d) => {
                   tessedit_char_whitelist: charactersWhiteList
                 }
                 )
+
                   .catch(err => {
                     console.error(err);
                   })
                   .then(result => {
+
+                    // loadingGif.size(0, 0);
+                    //loadingGif.position(document.getElementById('canvas_draw').offsetWidth / 2, document.documentElement.clientHeight / 2);
+
                     // Get Confidence score
                     console.log(result);
                     confidence = result.confidence
@@ -396,13 +441,24 @@ const s2 = (d) => {
                     // letterToShow = "A";
 
                     if (charactersWhiteList.includes(letterToShow)) {
-                      // DEFINE & SHOW THE GIGANT LETTER
-                      gigantLetter = new Text(letterToShow, document.getElementById('canvas_draw').offsetWidth / 2 - 200, document.documentElement.clientHeight / 2 + 200, 500, 0, "-", d);
-                      gigantLetter.show();
+                      // SHOW THE GIGANT LETTER
+                      gigantLetter.show(letterToShow);
+                      d.image(rejectImage, document.getElementById('canvas_draw').offsetWidth / 20, document.documentElement.clientHeight / 3 * 1.5);
+                      d.image(confirmImage, document.getElementById('canvas_draw').offsetWidth / 20 * 10, document.documentElement.clientHeight / 3 * 1.5);
+
+                      confirmImage.show();
+                      rejectImage.show();
 
                       // DEFINE SUBMIT LETTER EVENT
                       hasCheckedLetter = true;
                     } else {
+
+                      let reject = new d.image(rejectImage, document.getElementById('canvas_draw').offsetWidth / 20, document.documentElement.clientHeight / 3 * 1.5);
+                      let confirm = new d.image(confirmImage, document.getElementById('canvas_draw').offsetWidth / 20 * 11, document.documentElement.clientHeight / 3 * 1.5);
+
+                      confirm.show();
+                      reject.show();
+
 
                       // SHOW MESSAGE SAYING AN ERROR HAPPENED
                       console.log("Opps, an error occurred and the etter could not be recognized");
@@ -432,7 +488,10 @@ const s2 = (d) => {
                       }
                     }
                   }
-                  )
+
+                  );
+
+
               }
             }
           }
@@ -484,7 +543,7 @@ const s2 = (d) => {
 
         else if (menuButton.contains(hx, hy)) {
           if (handInUse == "Right") {
-            if (mode == "move") {
+            if (mode == "click") {
 
               if (selectedMenuButton == false) {
 
@@ -505,9 +564,9 @@ const s2 = (d) => {
 
                 // SHOW MENU
                 menuContainer.show();
-                newGameButton.show();
-                resumeGameButton.show();
-                changeHandButton.show();
+                newGameButton.show("menuButton");
+                resumeGameButton.show("menuButton");
+                changeHandButton.show("menuButton");
 
               } else {
                 selectedMenuButton = false;
@@ -533,9 +592,13 @@ const s2 = (d) => {
             if (mode == "move") {
               console.log("Navigate");
               // SHOW OTHER SCREEN
-              d.toggle();
+
               navigateButton.hide();
+              helpButton.hide();
+              //processLetter.hide();
+              d.toggle();
               navigateBackButton.show();
+
             }
           }
         }
@@ -563,13 +626,13 @@ const s2 = (d) => {
           }
         }
         else if (handInUse == "Right") {
-          if (mode == "draw") {
+          if (mode == "draw" && !openWindow) {
             // DRAWING MODE
             if (xp == 0 && yp == 0) {
               xp = hx;
               yp = hy;
             } else {
-              d.stroke(0, 0, 255);
+              d.stroke(255, 134, 228);
               d.strokeWeight(30);
               d.line(xp, yp, hx, hy);
               xp = hx
@@ -580,7 +643,7 @@ const s2 = (d) => {
         } else if (handInUse == "Left") {
 
           // Avoid mistakes
-          if (mode != 'confirm' && mode != 'cancel' & mode != 'draw') {
+          if (mode != 'confirm' && mode != 'cancel' & mode != 'draw' && mode != 'click' && !openWindow) {
             // DELETE MODE
 
             // CHECK IF IS NOT DELETING AN ELEMENT
@@ -588,7 +651,7 @@ const s2 = (d) => {
             } else {
 
               d.stroke(255);
-              d.strokeWeight(200);
+              d.strokeWeight(100);
 
               if (xp == 0 && yp == 0) {
                 xp = hx;
@@ -607,9 +670,13 @@ const s2 = (d) => {
               //deleteLetterButton.show();
               helpButton.show();
               navigateButton.show();
+
               for (let col = 0; col < numberOfLetters; col++) {
                 currentWordRow[col].show(currentWord[col], currentMode[col]);
               }
+
+
+              // navigateBackButton.show();
 
             }
           }
@@ -724,23 +791,33 @@ const s2 = (d) => {
 
 
   d.setup = () => {
+
     d.pixelDensity(3.0);
     drawCanvas = d.createCanvas(document.getElementById('canvas_draw').offsetWidth, document.documentElement.clientHeight);
 
     d.background(255);
+
     currentWord = [];
 
     // DEFINE THE BUTTONS
-    processLetter = new Button("PROCESS\nLETTER", document.getElementById('canvas_draw').offsetWidth - 150, document.documentElement.clientHeight - 150, 200, 28, 'green', 'green', 255, "br", d);
+    processLetter = new Button("Proccess\nLetter", document.getElementById('canvas_draw').offsetWidth - 150, document.documentElement.clientHeight - 150, 200, 28, 'green', 'green', 255, "br", d);
     //deleteLetterButton = new Button("DELETE\nLETTER", 300, document.documentElement.clientHeight - 150, 200, 28, 'red', 'red', 255, "bl", d);
-    menuButton = new Button("MENU", document.getElementById('canvas_draw').offsetWidth - 150, 150, 200, 28, 'blue', 'blue', 255, "tr", d);
-    helpButton = new Button("HELP", 300, 150, 200, 50, 'blue', 'blue', 255, "tl", d);
-    navigateButton = new Toggle(">>", 0, 0, document.getElementById('canvas_draw').offsetWidth / 10, document.documentElement.clientHeight, 60, 250, 'blue', 'blue', "l", d);
-    navigateBackButton = new Toggle("<<", document.getElementById('canvas_draw').offsetWidth - document.getElementById('canvas_draw').offsetWidth / 3, 0, document.getElementById('canvas_draw').offsetWidth / 10, document.documentElement.clientHeight, 60, 'blue', 'blue', 250, "r", d);
-    menuContainer = new Container(document.getElementById('canvas_draw').offsetWidth / 2 - 100, 300, document.getElementById('canvas_draw').offsetWidth / 7, 200, 'blue', 'blue', d);
-    resumeGameButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - 100, 325, "RESUME GAME", document.getElementById('canvas_draw').offsetWidth / 7, document.getElementById('canvas_draw').offsetWidth / 40, d);
-    newGameButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - 100, 375, "NEW GAME", document.getElementById('canvas_draw').offsetWidth / 7, document.getElementById('canvas_draw').offsetWidth / 40, d);
-    changeHandButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - 100, 425, "CHANGE HAND", document.getElementById('canvas_draw').offsetWidth / 7, document.getElementById('canvas_draw').offsetWidth / 40, d);
+    menuButton = new Button("Menu", document.getElementById('canvas_draw').offsetWidth - 150, 150, 200, 28, [230, 242, 248], [230, 242, 248], [0, 101, 152], "tr", d);
+    helpButton = new Button("Help", 300, 150, 200, 50, [230, 242, 248], [230, 242, 248], [0, 101, 152], "tl", d);
+    navigateButton = new Toggle(">>", 0, 0, document.getElementById('canvas_draw').offsetWidth / 10, document.documentElement.clientHeight, 60, [102, 177, 214], [102, 177, 214], 'white', "l", d);
+    navigateBackButton = new Toggle("<<", document.getElementById('canvas_draw').offsetWidth - document.getElementById('canvas_draw').offsetWidth / 3, 0, document.getElementById('canvas_draw').offsetWidth / 10, document.documentElement.clientHeight, 60, [102, 177, 214], [102, 177, 214], 'white', "r", d);
+
+    menuContainer = new Container(document.getElementById('canvas_draw').offsetWidth / 2 - document.getElementById('canvas_draw').offsetWidth / 1.5 / 2, 300, document.getElementById('canvas_draw').offsetWidth / 1.5, document.getElementById('canvas_draw').offsetWidth / 4, 'blue', 'blue', d);
+
+    menuOptionSize = document.getElementById('canvas_draw').offsetWidth / 5;
+    resumeGameButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - document.getElementById('canvas_draw').offsetWidth / 1.5 / 1.5 + menuOptionSize / 2, 325, "RESUME\nGAME", menuOptionSize, menuOptionSize, d);
+    newGameButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - document.getElementById('canvas_draw').offsetWidth / 1.5 / 1.5 + menuOptionSize + menuOptionSize / 2, 325, "NEW\nGAME", menuOptionSize, menuOptionSize, d);
+    changeHandButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - document.getElementById('canvas_draw').offsetWidth / 1.5 / 1.5 + 2 * menuOptionSize + menuOptionSize / 2, 325, "CHANGE\nHAND", menuOptionSize, menuOptionSize, d);
+
+
+
+    gigantLetter = new Text(letterToShow, document.getElementById('canvas_draw').offsetWidth / 2 - 200, document.documentElement.clientHeight / 2 + 200, 500, 0, "-", d);
+
 
     // DEFINE THE CURRENT WORD BOX
     size = document.getElementById('canvas_draw').offsetWidth / 20;
@@ -786,6 +863,9 @@ const s2 = (d) => {
 
     camera.start();
 
+
+
+
   };
 
 
@@ -801,6 +881,8 @@ const s2 = (d) => {
     helpButton.show();
     navigateButton.show();
 
+
+
     // PAINT THE LAST WORD AFTER PAINTING 
     for (let col = 0; col < numberOfLetters; col++) {
       if (currentLetterWord == col) {
@@ -812,10 +894,12 @@ const s2 = (d) => {
   };
 
   d.toggle = () => {
-    console.log("Inside toggle");
     if (drawMode == true) {
       document.getElementById("canvas_grid").classList.toggle("toggle");
+      openWindow = !openWindow;
     }
+
+
 
     //document.getElementById("canvas_grid").classList.remove('show');
 

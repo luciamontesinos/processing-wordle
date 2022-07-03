@@ -11,7 +11,7 @@ class Button {
     this.x = x;
     this.y = y;
     this.r = r;
-    this.ts = r / 6;
+    this.ts = r / 5;
     this.t = t;
     this.f = f;
     this.s = s;
@@ -23,6 +23,7 @@ class Button {
   }
   show() {
     this.p5.push();
+    this.p5.textFont(handlee);
     this.p5.fill(this.f);
     this.p5.stroke(this.f);
     this.p5.translate(this.x, this.y);
