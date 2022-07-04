@@ -21,8 +21,11 @@ class Text {
     this.t = text;
     this.p5.push();
     this.p5.fill(this.f);
-    this.p5.stroke(this.f);
+    this.p5.noStroke();
+    //this.p5.stroke(this.f);
+    this.p5.textFont(inter);
     this.p5.translate(this.x, this.y);
+    this.p5.textAlign(this.p5.CENTER, this.p5.CENTER);
     this.p5.textSize(this.ts);
 
     if (this.o == "bl") {
@@ -64,6 +67,8 @@ class Text {
     this.p5.push();
     this.p5.fill(255);
     this.p5.stroke(255);
+    this.p5.textAlign(this.p5.CENTER, this.p5.CENTER);
+    //this.strokeColor(255);
     this.p5.translate(this.x, this.y);
     this.p5.strokeWeight(this.s + 10);
     this.p5.textSize(this.ts);

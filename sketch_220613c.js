@@ -12,8 +12,8 @@ let processLetter;
 let menuButton;
 let gigantLetter;
 let handlee;
+let inter;
 let kinetip;
-let loadingGif;
 let arrow;
 let bottomMessage;
 let confirmImage;
@@ -23,6 +23,10 @@ let newGameButton;
 let changeHandButton;
 let cursor;
 let eraser;
+let processTextTitle;
+let processTextSubtitle;
+let processErrorText;
+let processingText;
 
 
 // GAME CONFIGURATION
@@ -59,6 +63,10 @@ let openWindow = false;
 let niceTry = "Nice try! Let's go for another word";
 let systemRecognice = "The system has recognized the following letter";
 let isThisLetter = "Is this the letter you drew?";
+let oops = "Oops...the letter could not be recognized. Try to draw it again!";
+let loading = "Processing letter...";
+
+
 let processing = false;
 
 
@@ -98,7 +106,7 @@ function startGame() {
   }
 
   let rand = Math.floor(Math.random() * (wordTable.getRowCount() + 1));
-  wordToGuess = wordTable.getString(rand, 0);
+  wordToGuess = wordTable.getString(rand, 0).toUpperCase();
   console.log(wordToGuess);
 
   //while (currentAttempt < numberOfAttempts) {
@@ -312,6 +320,7 @@ let gridP5 = new p5(s1, 'canvas_grid');
 const s2 = (d) => {
   d.preload = () => {
     handlee = d.loadFont('Handlee-Regular.ttf');
+    inter = d.loadFont('Inter.ttf');
 
 
   };
@@ -406,7 +415,6 @@ const s2 = (d) => {
                 drawP5.filter(d.DILATE);
                 drawP5.filter(d.DILATE);
                 drawP5.filter(d.THRESHOLD);
-                //loadingGif.position(document.getElementById('canvas_draw').offsetWidth / 2, document.documentElement.clientHeight / 2);
                 processing = true;
                 Tesseract.recognize(
                   drawP5.drawingContext.canvas, {
@@ -422,8 +430,6 @@ const s2 = (d) => {
                   .then(result => {
                     processing = false;
 
-                    // loadingGif.size(0, 0);
-                    //loadingGif.position(document.getElementById('canvas_draw').offsetWidth / 2, document.documentElement.clientHeight / 2);
 
                     // Get Confidence score
                     console.log(result);
@@ -432,26 +438,27 @@ const s2 = (d) => {
                     letterToShow = result.text[0];
 
 
-
-
-                    //{ tessedit_char_whitelist: characters, tessedit_pageseg_mode: 'SINGLE_CHAR' }));
-                    // console.log(guessedLetter);
-
-                    //confidenceLevel = guessedLetter[0]._resolve.symbols[0].confidence;
-                    //letterToShow = guessedLetter[0]._resolve.symbols[0].text;
-                    // letterToShow = "A";
-
                     if (charactersWhiteList.includes(letterToShow)) {
+                      processing = false;
+                      // DEFINE SUBMIT LETTER EVENT
+                      hasCheckedLetter = true;
+                      d.background(255);
+                      d.drawDots();
                       // SHOW THE GIGANT LETTER
                       gigantLetter.show(letterToShow);
 
+                      processTextTitle.show(systemRecognice);
+                      processTextSubtitle.show(isThisLetter);
 
-                      // DEFINE SUBMIT LETTER EVENT
-                      hasCheckedLetter = true;
+
+
                     } else {
+                      processing = false;
+
 
                       // SHOW MESSAGE SAYING AN ERROR HAPPENED
-                      console.log("Opps, an error occurred and the etter could not be recognized");
+                      //processErrorText.show(oops);
+
                       // ACT AS IF THEY REJECTED THE LETTER
 
                       // CLEAN SCREEN
@@ -465,17 +472,20 @@ const s2 = (d) => {
                       menuButton.show();
                       navigateButton.show();
 
-                      // MOVE POINTER TO CENTER TO MAKE SURE IT DOESN'T SEND IT AGAIN
-                      hx = document.getElementById('canvas_draw').offsetWidth / 2;
-                      hy = document.documentElement.clientHeight
+                      // // MOVE POINTER TO CENTER TO MAKE SURE IT DOESN'T SEND IT AGAIN
+                      // hx = document.getElementById('canvas_draw').offsetWidth / 2;
+                      // hy = document.documentElement.clientHeight
 
-                      // MAKE SURE IT DOESN'T SEND IT AGAIN
-                      hasCheckedLetter = true;
+
 
                       // PAINT THE LAST LETTER AFTER PAINTING 
                       for (let col = 0; col < numberOfLetters; col++) {
                         currentWordRow[col].show(currentWord[col], currentMode[col]);
                       }
+
+                      // MAKE SURE IT DOESN'T SEND IT AGAIN
+                      hasCheckedLetter = false;
+
                     }
                   }
 
@@ -488,30 +498,7 @@ const s2 = (d) => {
         }
 
 
-        // else if (deleteLetterButton.contains(hx, hy)) {
-        //   if (handInUse == "Right") {
-        //     if (mode == "move") {
 
-        //       // DELETE CANVAS AND DRAW EVERYTHING AGAIN
-
-        //       d.background(255);
-        //       d.drawDots();
-        //       processLetter.show();
-        //       deleteLetterButton.show();
-        //       menuButton.show();
-        //       helpButton.show();
-        //       navigateButton.show();
-
-        //       // PAINT THE LAST WORD AFTER PAINTING 
-        //       for (let col = 0; col < numberOfLetters; col++) {
-        //         if (currentLetterWord == col) {
-        //           currentMode[col] = "current";
-        //         }
-        //         currentWordRow[col].show(currentWord[col], currentMode[col]);
-        //       }
-        //     }
-        //   }
-        // }
         else if (helpButton.contains(hx, hy)) {
           if (handInUse == "Right") {
             if (mode == "move") {
@@ -569,7 +556,7 @@ const s2 = (d) => {
                 helpButton.show();
                 navigateButton.show();
                 for (let col = 0; col < numberOfLetters; col++) {
-                  currentWordRow[col].show();
+                  currentWordRow[col].show(currentWord[col], currentMode[col]);
                 }
 
               }
@@ -608,7 +595,7 @@ const s2 = (d) => {
               helpButton.show();
               navigateButton.show();
               for (let col = 0; col < numberOfLetters; col++) {
-                currentWordRow[col].show();
+                currentWordRow[col].show(currentWord[col], currentMode[col]);
               }
 
 
@@ -622,7 +609,8 @@ const s2 = (d) => {
               xp = hx;
               yp = hy;
             } else {
-              d.stroke(255, 134, 228);
+              d.stroke(0, 101, 152);
+              //d.stroke(255, 134, 228);
               d.strokeWeight(30);
               d.line(xp, yp, hx, hy);
               xp = hx
@@ -730,16 +718,23 @@ const s2 = (d) => {
             checkWord();
             currentAttempt++;
 
-
             currentWordRow = [];
-            currentWord = ["", "", "", "", "",];
-            currentMode = ["empty", "empty", "empty", "empty", "empty"];
+            currentWord = Array(numberOfLetters).fill("");
+            currentMode = Array(numberOfLetters).fill("empty");
             currentLetterWord = 0;
-            // restart variables
+
+            // DEFINE AGAIN THE CURRENT WORD BOX
+            size = document.getElementById('canvas_draw').offsetWidth / 20;
+            y = document.documentElement.clientHeight - 2 * size;
+            for (let col = 0; col < numberOfLetters; col++) {
+              x = (document.getElementById('canvas_draw').offsetWidth + 150) / 2 - numberOfLetters / 2 * 1.2 * size + col * 1.2 * size;
+              currentWordRow.push(new Slot(x, y, size, 0, col, d));
+            }
+
+
 
 
           }
-
         }
         if (mode == "cancel") {
           // Check what was the event to cancel
@@ -774,6 +769,7 @@ const s2 = (d) => {
             hasCheckedWord = false;
             //offer to select letter to change
           }
+
         }
       }
     }
@@ -806,8 +802,12 @@ const s2 = (d) => {
 
 
 
-    gigantLetter = new Text(letterToShow, document.getElementById('canvas_draw').offsetWidth / 2 - 200, document.documentElement.clientHeight / 2 + 200, 500, 0, "-", d);
+    gigantLetter = new Text(letterToShow, document.getElementById('canvas_draw').offsetWidth / 2, document.documentElement.clientHeight / 5 * 3, 400, 0, "-", d);
 
+    processTextTitle = new Text(systemRecognice, document.getElementById('canvas_image').offsetWidth / 2, document.documentElement.clientHeight / 8, 40, 0, "-", d);
+    processTextSubtitle = new Text(isThisLetter, document.getElementById('canvas_image').offsetWidth / 2, document.documentElement.clientHeight / 4, 30, 0, "-", d);
+    processErrorText = new Text(oops, document.getElementById('canvas_image').offsetWidth / 2, document.documentElement.clientHeight / 2, 30, 0, "-", d);
+    processingText = new Text(loading, document.getElementById('canvas_image').offsetWidth / 2, document.documentElement.clientHeight / 5 * 4, 30, 0, "-", d);
 
     // DEFINE THE CURRENT WORD BOX
     size = document.getElementById('canvas_draw').offsetWidth / 20;
@@ -888,28 +888,6 @@ const s2 = (d) => {
       document.getElementById("canvas_grid").classList.toggle("toggle");
       openWindow = !openWindow;
     }
-
-
-
-    //document.getElementById("canvas_grid").classList.remove('show');
-
-    //if (drawMode) {
-    //  document.getElementById("canvas_grid").classList.remove('col-0');
-    //  document.getElementById("canvas_grid").classList.add('col-9');
-    //  document.getElementById("canvas_draw").classList.remove('col-12');
-    //  document.getElementById("canvas_draw").classList.add('col-3');
-
-    //}
-    //else {
-    //  document.getElementById("canvas_grid").classList.remove('col-12');
-    //  document.getElementById("canvas_grid").classList.add('col-3');
-    //  document.getElementById("canvas_draw").classList.remove('col-0');
-    //  document.getElementById("canvas_draw").classList.add('col-9');
-    //}
-
-    //// PAINT ALL THE ELEMENTS AGAIN
-    //d.setup();
-    //d.draw();
   };
 };
 let drawP5 = new p5(s2, 'canvas_draw');
@@ -967,35 +945,48 @@ let pointerP5 = new p5(s3, 'canvas_pointer');
 
 const s4 = (i) => {
   i.preload = () => {
-    loadingGif = i.createImg('Loading.gif');
+
     //loadingGif.position(document.getElementById('canvas_draw').offsetWidth, document.documentElement.clientHeight);
-    confirmImage = i.loadImage('confirm.png');
-    rejectImage = i.loadImage("reject.png");
+    confirmImage = i.loadImage('Thumbs-up.png');
+    rejectImage = i.loadImage("Thumbs-down.png");
+    // confirmImage.resize(100, 0);
+    // rejectImage.resize(10, 0);
   }
 
   i.setup = () => {
     i.createCanvas(document.getElementById('canvas_image').offsetWidth, document.documentElement.clientHeight);
     i.noStroke();
+
   };
 
   i.draw = () => {
 
 
-    // if (selectedHelpButton) {
-
-    // } else if (hasCheckedLetter == true) {
-
-    //   i.image(rejectImage, document.getElementById('canvas_image').offsetWidth / 20, document.documentElement.clientHeight / 3 * 1.5);
-    //   i.image(confirmImage, document.getElementById('canvas_image').offsetWidth / 20 * 11, document.documentElement.clientHeight / 3 * 1.5);
+    if (selectedHelpButton) {
 
 
-    // } else if (processing) {
-    //   loadingGif.position(document.getElementById('canvas_image').offsetWidth, document.documentElement.clientHeight);
 
-    // } else {
-    //   i.clear();
-    //   i.fill(0);
-    // }
+    } else if (hasCheckedLetter == true) {
+
+      if (charactersWhiteList.includes(letterToShow)) {
+
+        i.image(rejectImage, document.getElementById('canvas_image').offsetWidth / 20, document.documentElement.clientHeight / 3 * 1.5, 250, 250);
+        i.image(confirmImage, document.getElementById('canvas_image').offsetWidth / 20 * 14, document.documentElement.clientHeight / 3 * 1.5, 250, 250);
+      } else {
+        processErrorText.show(oops);
+      }
+
+    } else if (processing) {
+      processingText.show(loading);
+    } else {
+      processErrorText.show("");
+      // processingText.hide();
+      i.clear();
+      i.fill(0);
+      // i.background(255);
+
+    }
+
   };
 
 };

@@ -34,14 +34,14 @@ class Slot {
     }
     else if (this.m == "correct") {
       this.sw = 3;
-      this.f = 'green';
+      this.f = [76, 136, 37];
       this.lf = 'white';
       this.s = 127;
     }
 
     else if (this.m == "semi") {
       this.sw = 3;
-      this.f = 'yellow';
+      this.f = [223, 174, 0];
       this.lf = 'white';
       this.s = 127;
     }
