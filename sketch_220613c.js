@@ -21,6 +21,8 @@ let rejectImage;
 let resumeGameButton;
 let newGameButton;
 let changeHandButton;
+let cursor;
+let eraser;
 
 
 // GAME CONFIGURATION
@@ -57,6 +59,7 @@ let openWindow = false;
 let niceTry = "Nice try! Let's go for another word";
 let systemRecognice = "The system has recognized the following letter";
 let isThisLetter = "Is this the letter you drew?";
+let processing = false;
 
 
 
@@ -309,10 +312,7 @@ let gridP5 = new p5(s1, 'canvas_grid');
 const s2 = (d) => {
   d.preload = () => {
     handlee = d.loadFont('Handlee-Regular.ttf');
-    //loadingGif = d.createImg('Loading.gif');
-    //loadingGif.position(document.getElementById('canvas_draw').offsetWidth, document.documentElement.clientHeight);
-    confirmImage = d.loadImage('confirm.png');
-    rejectImage = d.loadImage("reject.png");
+
 
   };
 
@@ -407,7 +407,7 @@ const s2 = (d) => {
                 drawP5.filter(d.DILATE);
                 drawP5.filter(d.THRESHOLD);
                 //loadingGif.position(document.getElementById('canvas_draw').offsetWidth / 2, document.documentElement.clientHeight / 2);
-
+                processing = true;
                 Tesseract.recognize(
                   drawP5.drawingContext.canvas, {
                   lang: 'dan',
@@ -420,6 +420,7 @@ const s2 = (d) => {
                     console.error(err);
                   })
                   .then(result => {
+                    processing = false;
 
                     // loadingGif.size(0, 0);
                     //loadingGif.position(document.getElementById('canvas_draw').offsetWidth / 2, document.documentElement.clientHeight / 2);
@@ -443,22 +444,11 @@ const s2 = (d) => {
                     if (charactersWhiteList.includes(letterToShow)) {
                       // SHOW THE GIGANT LETTER
                       gigantLetter.show(letterToShow);
-                      d.image(rejectImage, document.getElementById('canvas_draw').offsetWidth / 20, document.documentElement.clientHeight / 3 * 1.5);
-                      d.image(confirmImage, document.getElementById('canvas_draw').offsetWidth / 20 * 10, document.documentElement.clientHeight / 3 * 1.5);
 
-                      confirmImage.show();
-                      rejectImage.show();
 
                       // DEFINE SUBMIT LETTER EVENT
                       hasCheckedLetter = true;
                     } else {
-
-                      let reject = new d.image(rejectImage, document.getElementById('canvas_draw').offsetWidth / 20, document.documentElement.clientHeight / 3 * 1.5);
-                      let confirm = new d.image(confirmImage, document.getElementById('canvas_draw').offsetWidth / 20 * 11, document.documentElement.clientHeight / 3 * 1.5);
-
-                      confirm.show();
-                      reject.show();
-
 
                       // SHOW MESSAGE SAYING AN ERROR HAPPENED
                       console.log("Opps, an error occurred and the etter could not be recognized");
@@ -926,8 +916,7 @@ let drawP5 = new p5(s2, 'canvas_draw');
 
 
 
-let cursor;
-let eraser;
+
 
 const s3 = (p) => {
   p.setup = () => {
@@ -974,3 +963,41 @@ const s3 = (p) => {
 };
 
 let pointerP5 = new p5(s3, 'canvas_pointer');
+
+
+const s4 = (i) => {
+  i.preload = () => {
+    loadingGif = i.createImg('Loading.gif');
+    //loadingGif.position(document.getElementById('canvas_draw').offsetWidth, document.documentElement.clientHeight);
+    confirmImage = i.loadImage('confirm.png');
+    rejectImage = i.loadImage("reject.png");
+  }
+
+  i.setup = () => {
+    i.createCanvas(document.getElementById('canvas_image').offsetWidth, document.documentElement.clientHeight);
+    i.noStroke();
+  };
+
+  i.draw = () => {
+
+
+    // if (selectedHelpButton) {
+
+    // } else if (hasCheckedLetter == true) {
+
+    //   i.image(rejectImage, document.getElementById('canvas_image').offsetWidth / 20, document.documentElement.clientHeight / 3 * 1.5);
+    //   i.image(confirmImage, document.getElementById('canvas_image').offsetWidth / 20 * 11, document.documentElement.clientHeight / 3 * 1.5);
+
+
+    // } else if (processing) {
+    //   loadingGif.position(document.getElementById('canvas_image').offsetWidth, document.documentElement.clientHeight);
+
+    // } else {
+    //   i.clear();
+    //   i.fill(0);
+    // }
+  };
+
+};
+
+let imagesP5 = new p5(s4, 'canvas_image');
