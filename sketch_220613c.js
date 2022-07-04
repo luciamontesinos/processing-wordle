@@ -27,6 +27,7 @@ let processTextTitle;
 let processTextSubtitle;
 let processErrorText;
 let processingText;
+let closingButton;
 
 
 // GAME CONFIGURATION
@@ -126,7 +127,6 @@ function endGame() {
   else {
     finalMessage = "The word was " + wordToGuess + ". Better luck next time!";
   }
-
   finalMessage += "\nDo you want to guess another word?";
 }
 
@@ -501,7 +501,7 @@ const s2 = (d) => {
 
         else if (helpButton.contains(hx, hy)) {
           if (handInUse == "Right") {
-            if (mode == "move") {
+            if (mode == "click") {
               selectedHelpButton = true;
               // HIDE EVERYTHING, SHOW TUTORIAL
               processLetter.hide();
@@ -513,10 +513,126 @@ const s2 = (d) => {
                 currentWordRow[col].hide();
               }
 
+              d.background(255);
+              closingButton.show();
+
               // SHOW TUTORIAL
             }
           }
         }
+
+        else if (closingButton.contains(hx, hy)) {
+          if (handInUse == "Right") {
+            if (mode == "click") {
+              selectedHelpButton = false;
+
+              // HIDE EVERYTHING
+              closingButton.hide();
+
+              // SHOW MENU
+              //closingButton.hide();
+              menuContainer.hide();
+              newGameButton.hide();
+              resumeGameButton.hide();
+              changeHandButton.hide();
+
+              // SHOW EVERYTHING AGAIN
+
+              d.background(255);
+              d.drawDots();
+              menuButton.show();
+              processLetter.show();
+              // deleteLetterButton.show();
+              helpButton.show();
+              navigateButton.show();
+              for (let col = 0; col < numberOfLetters; col++) {
+                currentWordRow[col].show(currentWord[col], currentMode[col]);
+              }
+
+
+              // Hide whatever
+            }
+          }
+        }
+
+        else if (resumeGameButton.contains(hx, hy)) {
+          if (handInUse == "Right") {
+            if (mode == "click") {
+              // HIDE EVERYTHING
+              closingButton.hide();
+
+              // SHOW MENU
+              //closingButton.hide();
+              menuContainer.hide();
+              newGameButton.hide();
+              resumeGameButton.hide();
+              changeHandButton.hide();
+
+              // SHOW EVERYTHING AGAIN
+
+              d.background(255);
+              d.drawDots();
+              menuButton.show();
+              processLetter.show();
+              // deleteLetterButton.show();
+              helpButton.show();
+              navigateButton.show();
+              for (let col = 0; col < numberOfLetters; col++) {
+                currentWordRow[col].show(currentWord[col], currentMode[col]);
+              }
+
+
+              // Hide whatever
+            }
+          }
+        }
+
+        else if (newGameButton.contains(hx, hy)) {
+          if (handInUse == "Right") {
+            if (mode == "click") {
+              // HIDE EVERYTHING
+              closingButton.hide();
+
+              startGame();
+
+              // SHOW MENU
+              //closingButton.hide();
+              menuContainer.hide();
+              newGameButton.hide();
+              resumeGameButton.hide();
+              changeHandButton.hide();
+
+              // SHOW EVERYTHING AGAIN
+
+              d.background(255);
+              d.drawDots();
+              menuButton.show();
+              processLetter.show();
+              // deleteLetterButton.show();
+              helpButton.show();
+              navigateButton.show();
+
+              currentWordRow = [];
+              currentWord = Array(numberOfLetters).fill("");
+              currentMode = Array(numberOfLetters).fill("empty");
+              currentLetterWord = 0;
+              currentAttempt = 0;
+
+              size = document.getElementById('canvas_draw').offsetWidth / 20;
+              y = document.documentElement.clientHeight - 2 * size;
+              for (let col = 0; col < numberOfLetters; col++) {
+                x = (document.getElementById('canvas_draw').offsetWidth + 150) / 2 - numberOfLetters / 2 * 1.2 * size + col * 1.2 * size;
+                currentWordRow.push(new Slot(x, y, size, 0, col, d));
+              }
+
+              for (let col = 0; col < numberOfLetters; col++) {
+                currentWordRow[col].show(currentWord[col], currentMode[col]);
+              }
+              // Hide whatever
+            }
+          }
+        }
+
 
         else if (menuButton.contains(hx, hy)) {
           if (handInUse == "Right") {
@@ -524,22 +640,23 @@ const s2 = (d) => {
 
               if (selectedMenuButton == false) {
 
-                selectedMenuButton = true;
-                // HIDE EVERYTHING
 
+                // HIDE EVERYTHING
+                menuButton.hide();
                 processLetter.hide();
                 //deleteLetterButton.hide();
                 helpButton.hide();
-                navigateButton.hide();
+                //navigateButton.hide();
                 for (let col = 0; col < numberOfLetters; col++) {
                   currentWordRow[col].hide();
                 }
 
-                d.background(180);
+                d.background(255);
                 d.drawDots();
-                menuButton.show();
 
                 // SHOW MENU
+                navigateButton.show();
+                closingButton.show();
                 menuContainer.show();
                 newGameButton.show("menuButton");
                 resumeGameButton.show("menuButton");
@@ -621,7 +738,7 @@ const s2 = (d) => {
         } else if (handInUse == "Left") {
 
           // Avoid mistakes
-          if (mode != 'confirm' && mode != 'cancel' & mode != 'draw' && mode != 'click' && !openWindow) {
+          if (mode != 'confirm' && mode != 'cancel' & mode != 'draw' && mode != 'move' && !openWindow) {
             // DELETE MODE
 
             // CHECK IF IS NOT DELETING AN ELEMENT
@@ -648,6 +765,7 @@ const s2 = (d) => {
               //deleteLetterButton.show();
               helpButton.show();
               navigateButton.show();
+
 
               for (let col = 0; col < numberOfLetters; col++) {
                 currentWordRow[col].show(currentWord[col], currentMode[col]);
@@ -789,16 +907,21 @@ const s2 = (d) => {
     processLetter = new Button("Proccess\nLetter", document.getElementById('canvas_draw').offsetWidth - 150, document.documentElement.clientHeight - 150, 200, 28, 'green', 'green', 255, "br", d);
     //deleteLetterButton = new Button("DELETE\nLETTER", 300, document.documentElement.clientHeight - 150, 200, 28, 'red', 'red', 255, "bl", d);
     menuButton = new Button("Menu", document.getElementById('canvas_draw').offsetWidth - 150, 150, 200, 28, [230, 242, 248], [230, 242, 248], [0, 101, 152], "tr", d);
-    helpButton = new Button("Help", 300, 150, 200, 50, [230, 242, 248], [230, 242, 248], [0, 101, 152], "tl", d);
+    helpButton = new Button("Help", 300, document.documentElement.clientHeight - 150, 200, 50, [230, 242, 248], [230, 242, 248], [0, 101, 152], "tl", d);
+
+
+
+    closingButton = new Button("X", 300, 150, 100, 100, [230, 242, 248], [230, 242, 248], [0, 101, 152], "tl", d);
+
     navigateButton = new Toggle(">>", 0, 0, document.getElementById('canvas_draw').offsetWidth / 10, document.documentElement.clientHeight, 60, [102, 177, 214], [102, 177, 214], 'white', "l", d);
     navigateBackButton = new Toggle("<<", document.getElementById('canvas_draw').offsetWidth - document.getElementById('canvas_draw').offsetWidth / 3, 0, document.getElementById('canvas_draw').offsetWidth / 10, document.documentElement.clientHeight, 60, [102, 177, 214], [102, 177, 214], 'white', "r", d);
 
-    menuContainer = new Container(document.getElementById('canvas_draw').offsetWidth / 2 - document.getElementById('canvas_draw').offsetWidth / 1.5 / 2, 300, document.getElementById('canvas_draw').offsetWidth / 1.5, document.getElementById('canvas_draw').offsetWidth / 4, 'blue', 'blue', d);
+    menuContainer = new Container(350, 175, document.getElementById('canvas_draw').offsetWidth / 1.5, document.getElementById('canvas_draw').offsetWidth / 4, 'white', 'white', d);
 
-    menuOptionSize = document.getElementById('canvas_draw').offsetWidth / 5;
-    resumeGameButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - document.getElementById('canvas_draw').offsetWidth / 1.5 / 1.5 + menuOptionSize / 2, 325, "RESUME\nGAME", menuOptionSize, menuOptionSize, d);
-    newGameButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - document.getElementById('canvas_draw').offsetWidth / 1.5 / 1.5 + menuOptionSize + menuOptionSize / 2, 325, "NEW\nGAME", menuOptionSize, menuOptionSize, d);
-    changeHandButton = new Key(document.getElementById('canvas_draw').offsetWidth / 2 - document.getElementById('canvas_draw').offsetWidth / 1.5 / 1.5 + 2 * menuOptionSize + menuOptionSize / 2, 325, "CHANGE\nHAND", menuOptionSize, menuOptionSize, d);
+    menuOptionSize = document.getElementById('canvas_draw').offsetWidth / 8;
+    resumeGameButton = new Key(375 + menuOptionSize / 2, 250, "Resume\nGame", menuOptionSize, menuOptionSize, d);
+    newGameButton = new Key(375 + 2 * menuOptionSize, 250, "New\nGame", menuOptionSize, menuOptionSize, d);
+    changeHandButton = new Key(375 + 3 * menuOptionSize + menuOptionSize / 2, 250, "Change\nHand", menuOptionSize, menuOptionSize, d);
 
 
 
@@ -949,12 +1072,13 @@ const s4 = (i) => {
     //loadingGif.position(document.getElementById('canvas_draw').offsetWidth, document.documentElement.clientHeight);
     confirmImage = i.loadImage('Thumbs-up.png');
     rejectImage = i.loadImage("Thumbs-down.png");
+    helpScreen = i.loadImage("HelpScreen.png");
     // confirmImage.resize(100, 0);
     // rejectImage.resize(10, 0);
   }
 
   i.setup = () => {
-    i.createCanvas(document.getElementById('canvas_image').offsetWidth, document.documentElement.clientHeight);
+    i.createCanvas(document.getElementById('canvas_image').offsetWidth, document.documentElement.clientHeight,);
     i.noStroke();
 
   };
@@ -963,8 +1087,8 @@ const s4 = (i) => {
 
 
     if (selectedHelpButton) {
-
-
+      i.imageMode(i.CENTER);
+      i.image(helpScreen, document.getElementById('canvas_image').offsetWidth / 2, document.documentElement.clientHeight / 2);
 
     } else if (hasCheckedLetter == true) {
 

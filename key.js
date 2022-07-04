@@ -10,6 +10,8 @@ class Key {
     this.hidden = true;
     this.m = "empty";
     this.ts = 0;
+    this.sw = 0;
+    this.s = 180;
 
   }
   show(mode) {
@@ -20,27 +22,30 @@ class Key {
       this.f = [76, 136, 37];
       this.lf = 'white';
       this.ts = this.h / 1.5;
+      this.sw = keySize / 20;
     }
 
     else if (this.m == "semi") {
       this.f = [223, 174, 0];
       this.lf = 'white';
       this.ts = this.h / 1.5;
+      this.sw = keySize / 20;
     }
 
     else if (this.m == "error") {
       this.f = 127;
       this.lf = 'white';
       this.ts = this.h / 1.5;
+      this.sw = keySize / 20;
     }
 
     else if (this.m == "menuButton") {
-      this.f = 127;
-      this.lf = 'white';
-      this.ts = this.h / 5;
-
+      this.f = 230;
+      this.lf = 'black';
+      this.ts = this.h / 6;
+      this.sw = 5;
+      this.s = 'black'
     }
-
 
 
     // DEFAULT EMPTY
@@ -54,8 +59,8 @@ class Key {
     this.p5.push();
     this.p5.translate(this.x, this.y);
     this.p5.fill(this.f);
-    this.p5.stroke(180);
-    this.p5.strokeWeight(keySize / 20);
+    this.p5.stroke(this.s);
+    this.p5.strokeWeight(this.sw);
     this.p5.rect(0, 0, this.w, this.h, this.h / 5);
     this.p5.fill(this.lf);
     this.p5.noStroke();
