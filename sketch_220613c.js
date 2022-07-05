@@ -25,6 +25,8 @@ let cursor;
 let eraser;
 let click;
 let pencil;
+let handOk;
+let handCancel;
 let processTextTitle;
 let processTextSubtitle;
 let processErrorText;
@@ -1010,6 +1012,8 @@ const s3 = (p) => {
     eraser = p.loadImage('eraser1.png');
     click = p.loadImage('closedhand.png');
     pencil = p.loadImage('pencil.png');
+    handOk = p.loadImage('handUp.png');;
+    handCancel = p.loadImage('handDown.png');;
   };
 
 
@@ -1019,31 +1023,31 @@ const s3 = (p) => {
 
     switch (mode) {
       case "draw": {
-        p.image(pencil, hx, hy - 80, 80, 80);
+        p.image(pencil, hx, hy - 100, 100, 100);
         break;
       }
       case "delete": {
-        p.image(eraser, hx, hy, 50, 50);
+        p.image(eraser, hx, hy, 100, 100);
         break;
       }
       case "move": {
-        p.image(cursor, hx, hy, 50, 50);
+        p.image(cursor, hx, hy, 100, 100);
         break;
       }
       case "click": {
-        p.image(click, hx, hy, 50, 50);
+        p.image(click, hx, hy, 100, 100);
         break;
       }
       case "confirm": {
-        p.ellipse(hx, hy, 50, 50);
+        p.image(handOk, hx, hy, 100, 100);
         break;
       }
       case "cancel": {
-        p.ellipse(hx, hy, 50, 50);
+        p.image(handCancel, hx, hy, 100, 100);
         break;
       }
       default: {
-        p.ellipse(hx, hy, 50, 50);
+        p.ellipse(hx, hy, 100, 100);
         break;
       }
     }
