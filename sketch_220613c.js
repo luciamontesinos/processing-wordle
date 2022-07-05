@@ -138,7 +138,7 @@ function checkWord() {
     for (let col = 0; col < numberOfLetters; col++) {
       let index = characters.indexOf(wordToCheck[col].toLowerCase());
 
-      if (wordToCheck[col] == wordToGuess) {
+      if (wordToCheck[col] == wordToGuess[col]) {
         currentMode[col] = "correct";
         currentKeyMode[index] = "correct";
         allSlotsMode[(currentAttempt - 1) * numberOfLetters + col] = "correct";
