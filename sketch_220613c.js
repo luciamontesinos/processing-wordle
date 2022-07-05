@@ -291,26 +291,6 @@ const s1 = (g) => {
     g.setup();
 
   };
-
-  // g.mouseClicked = () => {
-  //   if (!drawMode) {
-  //     console.log("Inside toggle");
-  //     document.getElementById("canvas_grid").classList.toggle("toggle");
-  //     drawMode = true;
-  //   }
-  //   //else {
-  //   //  document.getElementById("canvas_grid").classList.remove('col-12');
-  //   //  document.getElementById("canvas_grid").classList.add('col-0');
-  //   //  document.getElementById("canvas_draw").classList.remove('col-0');
-  //   //  document.getElementById("canvas_draw").classList.add('col-12');
-  //   //}
-
-  //   //// ChANGE MODE
-  //   //drawMode = !drawMode;
-
-  //   // PAINT ALL THE ELEMENTS AGAIN
-  //   g.setup();
-  // };
 };
 
 
@@ -1058,7 +1038,6 @@ const s3 = (p) => {
         break;
       }
     }
-
   };
 
 };
@@ -1068,24 +1047,17 @@ let pointerP5 = new p5(s3, 'canvas_pointer');
 
 const s4 = (i) => {
   i.preload = () => {
-
-    //loadingGif.position(document.getElementById('canvas_draw').offsetWidth, document.documentElement.clientHeight);
     confirmImage = i.loadImage('Thumbs-up.png');
     rejectImage = i.loadImage("Thumbs-down.png");
     helpScreen = i.loadImage("HelpScreen.png");
-    // confirmImage.resize(100, 0);
-    // rejectImage.resize(10, 0);
   }
 
   i.setup = () => {
     i.createCanvas(document.getElementById('canvas_image').offsetWidth, document.documentElement.clientHeight,);
     i.noStroke();
-
   };
 
   i.draw = () => {
-
-
     if (selectedHelpButton) {
       i.imageMode(i.CENTER);
       i.image(helpScreen, document.getElementById('canvas_image').offsetWidth / 2, document.documentElement.clientHeight / 2);
@@ -1104,13 +1076,9 @@ const s4 = (i) => {
       processingText.show(loading);
     } else {
       processErrorText.show("");
-      // processingText.hide();
       i.clear();
       i.fill(0);
-      // i.background(255);
-
     }
-
   };
 
 };
