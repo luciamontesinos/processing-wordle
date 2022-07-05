@@ -1075,7 +1075,7 @@ const s4 = (i) => {
     } else if (processing) {
       processingText.show(loading);
     } else {
-      processErrorText.show("");
+      processErrorText.show(" ");
       i.clear();
       i.fill(0);
     }
