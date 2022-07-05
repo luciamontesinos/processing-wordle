@@ -722,7 +722,7 @@ const s2 = (d) => {
               yp = hy;
             } else {
               // Check distance
-              if (Math.hypot(xp - hx, yp - hy) < 20) {
+              if (Math.hypot(xp - hx, yp - hy) < 100) {
                 d.stroke(0, 101, 152);
                 //d.stroke(255, 134, 228);
                 d.strokeWeight(30);
