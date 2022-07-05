@@ -23,6 +23,8 @@ let newGameButton;
 let changeHandButton;
 let cursor;
 let eraser;
+let click;
+let pencil;
 let processTextTitle;
 let processTextSubtitle;
 let processErrorText;
@@ -718,7 +720,8 @@ const s2 = (d) => {
         } else if (handInUse == "Left") {
 
           // Avoid mistakes
-          if (mode != 'confirm' && mode != 'cancel' & mode != 'draw' && mode != 'move' && !openWindow) {
+          if (mode != 'confirm' && mode != 'cancel' && mode != 'move' && !openWindow) {
+            mode = "delete";
             // DELETE MODE
 
             // CHECK IF IS NOT DELETING AN ELEMENT
@@ -1003,8 +1006,10 @@ const s3 = (p) => {
   p.setup = () => {
     p.createCanvas(document.getElementById('canvas_pointer').offsetWidth, document.documentElement.clientHeight);
     p.noStroke();
-    cursor = p.loadImage('cursor.png');
-    eraser = p.loadImage('eraser.png');
+    cursor = p.loadImage('openhand.png');
+    eraser = p.loadImage('eraser1.png');
+    click = p.loadImage('closedhand.png');
+    pencil = p.loadImage('pencil.png');
   };
 
 
@@ -1014,27 +1019,31 @@ const s3 = (p) => {
 
     switch (mode) {
       case "draw": {
-        p.ellipse(hx, hy, 33, 33);
+        p.image(pencil, hx, hy - 80, 80, 80);
         break;
       }
       case "delete": {
-        p.image(eraser, hx, hy, 33, 33);
+        p.image(eraser, hx, hy, 50, 50);
         break;
       }
       case "move": {
-        p.image(cursor, hx, hy, 33, 33);
+        p.image(cursor, hx, hy, 50, 50);
+        break;
+      }
+      case "click": {
+        p.image(click, hx, hy, 50, 50);
         break;
       }
       case "confirm": {
-        p.ellipse(hx, hy, 33, 33);
+        p.ellipse(hx, hy, 50, 50);
         break;
       }
       case "cancel": {
-        p.ellipse(hx, hy, 33, 33);
+        p.ellipse(hx, hy, 50, 50);
         break;
       }
       default: {
-        p.ellipse(hx, hy, 33, 33);
+        p.ellipse(hx, hy, 50, 50);
         break;
       }
     }
