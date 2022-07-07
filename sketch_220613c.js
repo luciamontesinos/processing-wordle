@@ -32,6 +32,9 @@ let processTextSubtitle;
 let processErrorText;
 let processingText;
 let closingButton;
+let dominantHand = "Right";
+let nonDominantHand = "Left";
+let menuBottomElement;
 
 // GAME CONFIGURATION
 const characters = "abcdefghijklmnopqrstuvwxyzåæø";
@@ -51,6 +54,7 @@ let wordToGuess;
 let wordToCheck;
 let usedWords = [];
 let win = false;
+let lose = false;
 let currentWordRow = [];
 let currentWord = Array(numberOfLetters).fill("");
 let currentMode = Array(numberOfLetters).fill("empty");
@@ -60,17 +64,27 @@ let allLetters = Array(numberOfLetters * numberOfAttempts).fill("");
 let currentLetterWord = 0;
 let hasCheckedLetter = false;
 let hasCheckedWord = false;
+let hasFinishedGame = false;
 let guessedLetter = [];
 let letterToShow = "";
 let selectedMenuButton = false;
 let selectedHelpButton = false;
 let openWindow = false;
+let goodLuck = "Good luck with the next guess";
+let keepTrying = "Keep trying!";
 let niceTry = "Nice try! Let's go for another word";
+let randomSentences = [
+  niceTry,
+  keepTrying,
+  goodLuck,
+  "",
+  "The word has already been used",
+];
 let systemRecognice = "The system has recognized the following letter";
 let isThisLetter = "Is this the letter you drew?";
 let oops = "Oops...the letter could not be recognized. Try to draw it again!";
 let loading = "Processing letter...";
-
+let randW = 3;
 let processing = false;
 
 // CURSOR
@@ -106,25 +120,30 @@ function startGame() {
   let rand = Math.floor(Math.random() * (wordTable.getRowCount() + 1));
   wordToGuess = wordTable.getString(rand, 0).toUpperCase();
   console.log(wordToGuess);
+  dominantHand = "Right";
+  nonDominantHand = "Left";
 
-  //while (currentAttempt < numberOfAttempts) {
-  //}
-  if (win == false) {
-    endGame();
-  }
+  // while (currentAttempt < numberOfAttempts) {
+  //   if (win == false && lose == true) {
+  //     endGame();
+  //   }
+  // }
 }
 
 function endGame() {
   var finalMessage = "";
+
   // Stop timer
   if (win == true) {
     finalMessage =
       "Congratulations! you guessed the word.\n Total attempts:" +
       String(numberOfAttempts);
   } else {
+    lose = true;
     finalMessage = "The word was " + wordToGuess + ". Better luck next time!";
   }
   finalMessage += "\nDo you want to guess another word?";
+  console.log(finalMessage);
 }
 
 function checkWord() {
@@ -158,8 +177,10 @@ function checkWord() {
           wordToCheck[col];
       }
     }
+    //Show message
+    randW = Math.floor(Math.random() * (3 + 1));
   } else {
-    console.log("The word has already been used");
+    randW = 4; // THE WORD HAS ALREADY BEEN USED
   }
   // }
   // else {
@@ -213,8 +234,7 @@ const s1 = (g) => {
       keys[letter].show(currentKeyMode[letter]);
     }
 
-    //Show message
-    bottomMessage.show(niceTry);
+    bottomMessage.show(randomSentences[randW]);
 
     //Show arrow
     g.image(
@@ -274,7 +294,6 @@ const s1 = (g) => {
       keys.push(new Key(x, y, letter, keySize, keySize, g));
     }
 
-    //t, x, y, ts, f, o, p5
     bottomMessage = new Text(
       "",
       canvasWidth / 2.5,
@@ -406,7 +425,7 @@ const s2 = (d) => {
         // IF SOMETHING IS HIDEN< THEN YOU SHOULD NOT BE ABLE TO INTERACT
 
         if (processLetter.contains(hx, hy)) {
-          if (handInUse == "Right") {
+          if (handInUse == dominantHand) {
             if (mode == "click") {
               if (hasCheckedLetter == false) {
                 // HIDE EVERYTHING TO PROCESS
@@ -455,7 +474,7 @@ const s2 = (d) => {
                       d.background(255);
                       d.drawDots();
                       // SHOW THE GIGANT LETTER
-                      gigantLetter.show(letterToShow);
+                      gigantLetter.show(letterToShow.toUpperCase());
 
                       processTextTitle.show(systemRecognice);
                       processTextSubtitle.show(isThisLetter);
@@ -500,7 +519,7 @@ const s2 = (d) => {
             yp = hy;
           }
         } else if (helpButton.contains(hx, hy)) {
-          if (handInUse == "Right") {
+          if (handInUse == dominantHand) {
             if (mode == "click") {
               selectedHelpButton = true;
               // HIDE EVERYTHING, SHOW TUTORIAL
@@ -514,7 +533,6 @@ const s2 = (d) => {
               }
 
               d.background(255);
-              closingButton.show();
 
               // SHOW TUTORIAL
             }
@@ -522,9 +540,10 @@ const s2 = (d) => {
             yp = hy;
           }
         } else if (closingButton.contains(hx, hy)) {
-          if (handInUse == "Right") {
+          if (handInUse == dominantHand) {
             if (mode == "click") {
               selectedHelpButton = false;
+              selectedMenuButton = false;
 
               // HIDE EVERYTHING
               closingButton.hide();
@@ -535,6 +554,8 @@ const s2 = (d) => {
               newGameButton.hide();
               resumeGameButton.hide();
               changeHandButton.hide();
+              menuBottomElement.show("");
+              menuBottomElement.hide();
 
               // SHOW EVERYTHING AGAIN
 
@@ -555,9 +576,10 @@ const s2 = (d) => {
             yp = hy;
           }
         } else if (resumeGameButton.contains(hx, hy)) {
-          if (handInUse == "Right") {
+          if (handInUse == dominantHand) {
             if (mode == "click") {
               // HIDE EVERYTHING
+              selectedMenuButton = false;
               closingButton.hide();
 
               // SHOW MENU
@@ -585,8 +607,37 @@ const s2 = (d) => {
             xp = hx;
             yp = hy;
           }
+        } else if (changeHandButton.contains(hx, hy)) {
+          if (handInUse == dominantHand) {
+            if (mode == "click") {
+              console.log(dominantHand);
+
+              navigateButton.show();
+              for (let col = 0; col < numberOfLetters; col++) {
+                currentWordRow[col].show(currentWord[col], currentMode[col]);
+              }
+
+              if (dominantHand == "Right") {
+                dominantHand = "Left";
+                nonDominantHand = "Right";
+              } else if (dominantHand == "Left") {
+                dominantHand = "Right";
+                nonDominantHand = "Left";
+              }
+              menuContainer.show();
+              menuBottomElement.show("Dominant hand: " + dominantHand);
+
+              newGameButton.show("menuButton");
+              resumeGameButton.show("menuButton");
+              changeHandButton.show("menuButton");
+
+              // Hide whatever
+            }
+            xp = hx;
+            yp = hy;
+          }
         } else if (newGameButton.contains(hx, hy)) {
-          if (handInUse == "Right") {
+          if (handInUse == dominantHand) {
             if (mode == "click") {
               // HIDE EVERYTHING
               closingButton.hide();
@@ -615,6 +666,8 @@ const s2 = (d) => {
               currentMode = Array(numberOfLetters).fill("empty");
               currentLetterWord = 0;
               currentAttempt = 0;
+              win = false;
+              lose = false;
 
               size = document.getElementById("canvas_draw").offsetWidth / 20;
               y = document.documentElement.clientHeight - 2 * size;
@@ -636,50 +689,55 @@ const s2 = (d) => {
             yp = hy;
           }
         } else if (menuButton.contains(hx, hy)) {
-          if (handInUse == "Right") {
+          if (handInUse == dominantHand) {
             if (mode == "click") {
-              if (selectedMenuButton == false) {
-                // HIDE EVERYTHING
-                menuButton.hide();
-                processLetter.hide();
-                //deleteLetterButton.hide();
-                helpButton.hide();
-                //navigateButton.hide();
-                for (let col = 0; col < numberOfLetters; col++) {
-                  currentWordRow[col].hide();
-                }
-
-                d.background(255);
-                d.drawDots();
-
-                // SHOW MENU
-                navigateButton.show();
-                closingButton.show();
-                menuContainer.show();
-                newGameButton.show("menuButton");
-                resumeGameButton.show("menuButton");
-                changeHandButton.show("menuButton");
-              } else {
-                selectedMenuButton = false;
-                // SHOW EVERYTHING AGAIN
-                d.background(255);
-                d.drawDots();
-                menuButton.show();
-                processLetter.show();
-                // deleteLetterButton.show();
-                helpButton.show();
-                navigateButton.show();
-                for (let col = 0; col < numberOfLetters; col++) {
-                  currentWordRow[col].show(currentWord[col], currentMode[col]);
-                }
+              selectedMenuButton = true;
+              // HIDE EVERYTHING
+              menuButton.hide();
+              processLetter.hide();
+              //deleteLetterButton.hide();
+              helpButton.hide();
+              //navigateButton.hide();
+              for (let col = 0; col < numberOfLetters; col++) {
+                currentWordRow[col].hide();
               }
+
+              d.background(255);
+              d.drawDots();
+
+              // SHOW MENU
+              navigateButton.show();
+
+              menuContainer.show();
+
+              newGameButton.show("menuButton");
+              resumeGameButton.show("menuButton");
+              changeHandButton.show("menuButton");
+              menuBottomElement.show("Dominant hand: " + dominantHand);
+              for (let col = 0; col < numberOfLetters; col++) {
+                currentWordRow[col].show(currentWord[col], currentMode[col]);
+              }
+              // } else {
+              //   selectedMenuButton = false;
+              //   // SHOW EVERYTHING AGAIN
+              //   d.background(255);
+              //   d.drawDots();
+              //   menuButton.show();
+              //   processLetter.show();
+              //   // deleteLetterButton.show();
+              //   helpButton.show();
+              //   navigateButton.show();
+              //   for (let col = 0; col < numberOfLetters; col++) {
+              //     currentWordRow[col].show(currentWord[col], currentMode[col]);
+              //   }
+              // }
             }
             xp = hx;
             yp = hy;
           }
         } else if (navigateButton.contains(hx, hy)) {
-          if (handInUse == "Right") {
-            if (mode == "move") {
+          if (handInUse == dominantHand) {
+            if (mode == "move" || mode == "click") {
               console.log("Navigate");
               // SHOW OTHER SCREEN
 
@@ -693,8 +751,8 @@ const s2 = (d) => {
             yp = hy;
           }
         } else if (navigateBackButton.contains(hx, hy)) {
-          if (handInUse == "Right") {
-            if (mode == "move") {
+          if (handInUse == dominantHand) {
+            if (mode == "move" || mode == "click") {
               console.log("Navigate back");
               // SHOW OTHER SCREEN
               d.toggle();
@@ -714,8 +772,13 @@ const s2 = (d) => {
             xp = hx;
             yp = hy;
           }
-        } else if (handInUse == "Right") {
-          if (mode == "draw" && !openWindow) {
+        } else if (handInUse == dominantHand) {
+          if (
+            mode == "draw" &&
+            !openWindow &&
+            !selectedHelpButton &&
+            !selectedMenuButton
+          ) {
             // DRAWING MODE
             if (xp == 0 && yp == 0) {
               xp = hx;
@@ -732,13 +795,15 @@ const s2 = (d) => {
               yp = hy;
             }
           }
-        } else if (handInUse == "Left") {
+        } else if (handInUse == nonDominantHand) {
           // Avoid mistakes
           if (
             mode != "confirm" &&
             mode != "cancel" &&
             mode != "move" &&
-            !openWindow
+            !openWindow &&
+            !selectedHelpButton &&
+            !selectedMenuButton
           ) {
             mode = "delete";
             // DELETE MODE
@@ -752,40 +817,85 @@ const s2 = (d) => {
               navigateBackButton.contains(hx, hy)
             ) {
             } else {
-              d.stroke(255);
-              d.strokeWeight(100);
+              if (selectedHelpButton == false && selectedMenuButton == false) {
+                d.stroke(255);
+                d.strokeWeight(100);
 
-              if (xp == 0 && yp == 0) {
+                if (xp == 0 && yp == 0) {
+                  xp = hx;
+                  yp = hy;
+                }
+
+                d.line(xp, yp, hx, hy);
+
                 xp = hx;
                 yp = hy;
+
+                // PAINT THE GRID AFTER DELETING
+                d.drawDots();
+                menuButton.show();
+                processLetter.show();
+                //deleteLetterButton.show();
+                helpButton.show();
+                navigateButton.show();
+
+                for (let col = 0; col < numberOfLetters; col++) {
+                  currentWordRow[col].show(currentWord[col], currentMode[col]);
+                }
+
+                // navigateBackButton.show();
               }
-
-              d.line(xp, yp, hx, hy);
-
-              xp = hx;
-              yp = hy;
-
-              // PAINT THE GRID AFTER DELETING
-              d.drawDots();
-              menuButton.show();
-              processLetter.show();
-              //deleteLetterButton.show();
-              helpButton.show();
-              navigateButton.show();
-
-              for (let col = 0; col < numberOfLetters; col++) {
-                currentWordRow[col].show(currentWord[col], currentMode[col]);
-              }
-
-              // navigateBackButton.show();
             }
           }
         }
 
         if (mode == "confirm") {
           // Check what was the event to confirm
+
+          if (hasFinishedGame == true) {
+            startGame();
+
+            // SHOW MENU
+            //closingButton.hide();
+            menuContainer.hide();
+            newGameButton.hide();
+            resumeGameButton.hide();
+            changeHandButton.hide();
+
+            // SHOW EVERYTHING AGAIN
+
+            d.background(255);
+            d.drawDots();
+            menuButton.show();
+            processLetter.show();
+            // deleteLetterButton.show();
+            helpButton.show();
+            navigateButton.show();
+
+            currentWordRow = [];
+            currentWord = Array(numberOfLetters).fill("");
+            currentMode = Array(numberOfLetters).fill("empty");
+            currentLetterWord = 0;
+            currentAttempt = 0;
+            win = false;
+            lose = false;
+
+            size = document.getElementById("canvas_draw").offsetWidth / 20;
+            y = document.documentElement.clientHeight - 2 * size;
+            for (let col = 0; col < numberOfLetters; col++) {
+              x =
+                (document.getElementById("canvas_draw").offsetWidth + 150) / 2 -
+                (numberOfLetters / 2) * 1.2 * size +
+                col * 1.2 * size;
+              currentWordRow.push(new Slot(x, y, size, 0, col, d));
+            }
+
+            for (let col = 0; col < numberOfLetters; col++) {
+              currentWordRow[col].show(currentWord[col], currentMode[col]);
+            }
+          }
           // if submit letter event
-          if (hasCheckedLetter == true) {
+          else if (hasCheckedLetter == true) {
             // IF THEY ACCEPT THE LETTER
             gigantLetter.hide();
 
@@ -835,6 +945,10 @@ const s2 = (d) => {
             checkWord();
             currentAttempt++;
 
+            if (currentAttempt > numberOfAttempts) {
+              endGame();
+            }
+
             currentWordRow = [];
             currentWord = Array(numberOfLetters).fill("");
             currentMode = Array(numberOfLetters).fill("empty");
@@ -856,7 +970,10 @@ const s2 = (d) => {
         }
         if (mode == "cancel") {
           // Check what was the event to cancel
-          if (hasCheckedLetter == true) {
+
+          if (hasFinishedGame == true) {
+            // TODO ????
+          } else if (hasCheckedLetter == true) {
             // IF THEY REJECT THE LETTER
             gigantLetter.hide();
 
@@ -885,7 +1002,23 @@ const s2 = (d) => {
           } else if (hasCheckedWord == true) {
             // IF THEY REJECT THE WORD
             hasCheckedWord = false;
+
             //offer to select letter to change
+            currentWordRow = [];
+            currentWord = Array(numberOfLetters).fill("");
+            currentMode = Array(numberOfLetters).fill("empty");
+            currentLetterWord = 0;
+
+            // DEFINE AGAIN THE CURRENT WORD BOX
+            size = document.getElementById("canvas_draw").offsetWidth / 20;
+            y = document.documentElement.clientHeight - 2 * size;
+            for (let col = 0; col < numberOfLetters; col++) {
+              x =
+                (document.getElementById("canvas_draw").offsetWidth + 150) / 2 -
+                (numberOfLetters / 2) * 1.2 * size +
+                col * 1.2 * size;
+              currentWordRow.push(new Slot(x, y, size, 0, col, d));
+            }
           }
           xp = hx;
           yp = hy;
@@ -990,8 +1123,24 @@ const s2 = (d) => {
       175,
       document.getElementById("canvas_draw").offsetWidth / 1.5,
       document.getElementById("canvas_draw").offsetWidth / 4,
-      "white",
-      "white",
+      [250, 250, 250],
+      [0, 101, 152],
+      d
+    );
+
+    // coords    x,y
+    // text size ts
+    // text      t
+    // fill      f
+    // stroke    s
+    // orientation (top left, top right, top center, bottom left, bottom right bottom center)
+    menuBottomElement = new Text(
+      "Dominant hand: " + dominantHand,
+      document.getElementById("canvas_draw").offsetWidth / 2,
+      200,
+      50,
+      [(0, 101, 152)],
+      "",
       d
     );
 
@@ -1007,6 +1156,7 @@ const s2 = (d) => {
     newGameButton = new Key(
       375 + 2 * menuOptionSize,
       250,
+
       "New\nGame",
       menuOptionSize,
       menuOptionSize,
@@ -1202,7 +1352,8 @@ const s4 = (i) => {
   i.preload = () => {
     confirmImage = i.loadImage("Thumbs-up.png");
     rejectImage = i.loadImage("Thumbs-down.png");
-    helpScreen = i.loadImage("HelpScreen.png");
+    winScreen = i.loadImage("HelpScreen.png");
+    loseScreen = i.loadImage("HelpScreen.png");
   };
 
   i.setup = () => {
@@ -1211,6 +1362,18 @@ const s4 = (i) => {
       document.documentElement.clientHeight
     );
     i.noStroke();
+    closingButton = new Button(
+      "X",
+      300,
+      150,
+      100,
+      100,
+      [230, 242, 248],
+      [230, 242, 248],
+      [0, 101, 152],
+      "tl",
+      i
+    );
   };
 
   i.draw = () => {
@@ -1219,8 +1382,14 @@ const s4 = (i) => {
       i.image(
         helpScreen,
         document.getElementById("canvas_image").offsetWidth / 2,
-        document.documentElement.clientHeight / 2
+        document.documentElement.clientHeight / 2,
+        document.getElementById("canvas_image").offsetWidth * 0.6,
+        document.documentElement.clientHeight * 0.6
       );
+
+      closingButton.show();
+    } else if (selectedMenuButton) {
+      closingButton.show();
     } else if (hasCheckedLetter == true) {
       if (charactersWhiteList.includes(letterToShow)) {
         i.image(
@@ -1242,6 +1411,26 @@ const s4 = (i) => {
       }
     } else if (processing) {
       processingText.show(loading);
+    } else if (win) {
+      i.imageMode(i.CENTER);
+      i.image(
+        winScreen,
+        document.getElementById("canvas_image").offsetWidth / 2,
+        document.documentElement.clientHeight / 2,
+        document.getElementById("canvas_image").offsetWidth * 0.6,
+        document.documentElement.clientHeight * 0.6
+      );
+      hasFinishedGame = true;
+    } else if (lose) {
+      i.imageMode(i.CENTER);
+      i.image(
+        loseScreen,
+        document.getElementById("canvas_image").offsetWidth / 2,
+        document.documentElement.clientHeight / 2,
+        document.getElementById("canvas_image").offsetWidth * 0.6,
+        document.documentElement.clientHeight * 0.6
+      );
+      hasFinishedGame = true;
     } else {
       processErrorText.show(" ");
       i.clear();

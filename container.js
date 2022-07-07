@@ -6,9 +6,9 @@ class Container {
     this.h = h;
     this.s = s;
     this.f = f;
-    this.l = '';
+    this.l = "";
     this.a = 0;
-    this.ta = 3.14 * (3);
+    this.ta = 3.14 * 3;
     this.visible = true;
     this.wCopy = w;
     this.hCopy = h;
@@ -19,7 +19,7 @@ class Container {
     this.p5.push();
     this.p5.translate(this.x, this.y);
     this.p5.fill(this.f);
-    this.p5.stroke('black');
+    this.p5.stroke([0, 101, 152]);
     this.p5.strokeWeight(3);
     this.p5.rect(0, 0, this.w, this.h, this.h / 15);
     this.p5.fill(0);
@@ -31,7 +31,9 @@ class Container {
   }
   contains(x, y) {
     if (this.hidden == false) {
-      return ((x > this.x) && (x < this.x + this.w) && (y > this.y) && (y < this.y + this.h));
+      return (
+        x > this.x && x < this.x + this.w && y > this.y && y < this.y + this.h
+      );
     } else return false;
   }
   morph() {
@@ -43,11 +45,9 @@ class Container {
     this.p5.push();
     this.p5.translate(this.x, this.y);
 
-
     this.p5.rect(0, 0, this.w, this.h, this.h / 15);
     this.p5.fill(0);
     this.p5.noStroke();
-
 
     this.hidden = true;
     //this.p5.text(this.l.toUpperCase(), this.h / 3.8, this.h / 1.3);
@@ -64,7 +64,6 @@ class Container {
   //     this.show();
   //     this.p5.background(0);
 
-
   //  }else{
   //     this.p5.print("make visible");
 
@@ -72,7 +71,6 @@ class Container {
   //     this.h = this.hCopy;
   //     this.p5.background(0);
   //     this.show();
-
 
   //  }
   //}
