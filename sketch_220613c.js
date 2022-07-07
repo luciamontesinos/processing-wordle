@@ -1352,6 +1352,7 @@ const s4 = (i) => {
   i.preload = () => {
     confirmImage = i.loadImage("Thumbs-up.png");
     rejectImage = i.loadImage("Thumbs-down.png");
+    helpScreen = i.loadImage("HelpScreen.png");
     winScreen = i.loadImage("HelpScreen.png");
     loseScreen = i.loadImage("HelpScreen.png");
   };
