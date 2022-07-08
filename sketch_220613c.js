@@ -478,7 +478,8 @@ const s2 = (d) => {
                       d.background(255);
                       d.drawDots();
                       // SHOW THE GIGANT LETTER
-                      gigantLetter.show(letterToShow.toUpperCase());
+                      letterToShow = letterToShow.toUpperCase();
+                      gigantLetter.show(letterToShow);
 
                       processTextTitle.show(systemRecognice);
                       processTextSubtitle.show(isThisLetter);
