@@ -1279,7 +1279,6 @@ const s2 = (d) => {
 
   d.draw = () => {
     d.noLoop();
-    d.toggle();
 
     hands.onResults(d.onResults);
     // PAINT THE BUTTONS AFTER PAINTING
@@ -1287,16 +1286,15 @@ const s2 = (d) => {
     //deleteLetterButton.show();
     menuButton.show();
     helpButton.show();
-    navigateBackButton.show();
-    // navigateButton.show();
+    navigateButton.show();
 
-    // // PAINT THE LAST WORD AFTER PAINTING
-    // for (let col = 0; col < numberOfLetters; col++) {
-    //   if (currentLetterWord == col) {
-    //     currentMode[col] = "current";
-    //   }
-    //   currentWordRow[col].show(currentWord[col], currentMode[col]);
-    // }
+    // PAINT THE LAST WORD AFTER PAINTING
+    for (let col = 0; col < numberOfLetters; col++) {
+      if (currentLetterWord == col) {
+        currentMode[col] = "current";
+      }
+      currentWordRow[col].show(currentWord[col], currentMode[col]);
+    }
   };
 
   d.toggle = () => {
