@@ -73,20 +73,21 @@ let letterToShow = "";
 let selectedMenuButton = false;
 let selectedHelpButton = false;
 let openWindow = false;
-let goodLuck = "Good luck with the next guess";
-let keepTrying = "Keep trying!";
-let niceTry = "Nice try! Let's go for another word";
+let goodLuck = "Held og lykke med dit næste gæt";
+
+let keepTrying = "Kom igen!";
+let niceTry = "Godt forsøgt! Prøv med et nyt ord";
 let randomSentences = [
   niceTry,
   keepTrying,
   goodLuck,
   "",
-  "The word has already been used",
+  "Du har allerede prøvet med dette ord",
 ];
-let systemRecognice = "The system has recognized the following letter";
-let isThisLetter = "Is this the letter you drew?";
-let oops = "Oops...the letter could not be recognized. Try to draw it again!";
-let loading = "Processing letter...";
+let systemRecognice = "Vi har genkendt dette bogstav:";
+let isThisLetter = "Svarer det til bogstavet du skrev?";
+let oops = "Ups… Dette bogstav kunne ikke genkendes. Prøv at tegn det igen!";
+let loading = "Genkender bogstav…";
 let randW = 3;
 let processing = false;
 
@@ -623,12 +624,15 @@ const s2 = (d) => {
               if (dominantHand == "Right") {
                 dominantHand = "Left";
                 nonDominantHand = "Right";
+                menuContainer.show();
+                menuBottomElement.show("Venstrehåndet");
               } else if (dominantHand == "Left") {
                 dominantHand = "Right";
                 nonDominantHand = "Left";
+                menuContainer.show();
+
+                menuBottomElement.show("Højrehåndet");
               }
-              menuContainer.show();
-              menuBottomElement.show("Dominant hand: " + dominantHand);
 
               newGameButton.show("menuButton");
               resumeGameButton.show("menuButton");
@@ -716,7 +720,12 @@ const s2 = (d) => {
               newGameButton.show("menuButton");
               resumeGameButton.show("menuButton");
               changeHandButton.show("menuButton");
-              menuBottomElement.show("Dominant hand: " + dominantHand);
+              if (dominantHand == "Left") {
+                menuBottomElement.show("Venstrehåndet");
+              } else if (dominantHand == "Right") {
+                menuBottomElement.show("Højrehåndet");
+              }
+
               for (let col = 0; col < numberOfLetters; col++) {
                 currentWordRow[col].show(currentWord[col], currentMode[col]);
               }
@@ -1043,7 +1052,7 @@ const s2 = (d) => {
 
     // DEFINE THE BUTTONS
     processLetter = new Button(
-      "Proccess\nLetter",
+      "Genkender\nBogstav",
       document.getElementById("canvas_draw").offsetWidth - 150,
       document.documentElement.clientHeight - 150,
       200,
@@ -1068,7 +1077,7 @@ const s2 = (d) => {
       d
     );
     helpButton = new Button(
-      "Help",
+      "Hjælp",
       300,
       document.documentElement.clientHeight - 150,
       200,
@@ -1137,21 +1146,21 @@ const s2 = (d) => {
     // fill      f
     // stroke    s
     // orientation (top left, top right, top center, bottom left, bottom right bottom center)
+    menuOptionSize = document.getElementById("canvas_draw").offsetWidth / 8;
     menuBottomElement = new Text(
       "Dominant hand: " + dominantHand,
-      document.getElementById("canvas_draw").offsetWidth / 2,
-      200,
-      50,
+      375 + 3 * menuOptionSize + menuOptionSize / 2 + 100,
+      450,
+      40,
       [(0, 101, 152)],
       "",
       d
     );
 
-    menuOptionSize = document.getElementById("canvas_draw").offsetWidth / 8;
     resumeGameButton = new Key(
       375 + menuOptionSize / 2,
       250,
-      "Resume\nGame",
+      "Genoptag\nspil",
       menuOptionSize,
       menuOptionSize,
       d
@@ -1160,7 +1169,7 @@ const s2 = (d) => {
       375 + 2 * menuOptionSize,
       250,
 
-      "New\nGame",
+      "Nyt\nspil",
       menuOptionSize,
       menuOptionSize,
       d
@@ -1168,7 +1177,7 @@ const s2 = (d) => {
     changeHandButton = new Key(
       375 + 3 * menuOptionSize + menuOptionSize / 2,
       250,
-      "Change\nHand",
+      "Skift\nHånd",
       menuOptionSize,
       menuOptionSize,
       d
@@ -1270,6 +1279,7 @@ const s2 = (d) => {
 
   d.draw = () => {
     d.noLoop();
+    d.toggle();
 
     hands.onResults(d.onResults);
     // PAINT THE BUTTONS AFTER PAINTING
@@ -1277,15 +1287,16 @@ const s2 = (d) => {
     //deleteLetterButton.show();
     menuButton.show();
     helpButton.show();
-    navigateButton.show();
+    navigateBackButton.show();
+    // navigateButton.show();
 
-    // PAINT THE LAST WORD AFTER PAINTING
-    for (let col = 0; col < numberOfLetters; col++) {
-      if (currentLetterWord == col) {
-        currentMode[col] = "current";
-      }
-      currentWordRow[col].show(currentWord[col], currentMode[col]);
-    }
+    // // PAINT THE LAST WORD AFTER PAINTING
+    // for (let col = 0; col < numberOfLetters; col++) {
+    //   if (currentLetterWord == col) {
+    //     currentMode[col] = "current";
+    //   }
+    //   currentWordRow[col].show(currentWord[col], currentMode[col]);
+    // }
   };
 
   d.toggle = () => {
@@ -1356,8 +1367,8 @@ const s4 = (i) => {
     confirmImage = i.loadImage("Thumbs-up.png");
     rejectImage = i.loadImage("Thumbs-down.png");
     helpScreen = i.loadImage("HelpScreen.png");
-    winScreen = i.loadImage("HelpScreen.png");
-    loseScreen = i.loadImage("HelpScreen.png");
+    winScreen = i.loadImage("winGame.png");
+    loseScreen = i.loadImage("loseGame.png");
   };
 
   i.setup = () => {
