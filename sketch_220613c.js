@@ -20,6 +20,7 @@ let confirmImage;
 let helpScreen;
 let winScreen;
 let loseScreen;
+let playAgainScreen;
 let rejectImage;
 let resumeGameButton;
 let newGameButton;
@@ -141,7 +142,7 @@ function endGame() {
   if (win == true) {
     finalMessage =
       "Congratulations! you guessed the word.\n Total attempts:" +
-      String(numberOfAttempts);
+      String(currentAttempt);
   } else {
     lose = true;
     finalMessage = "The word was " + wordToGuess + ". Better luck next time!";
@@ -543,6 +544,19 @@ const s2 = (d) => {
             }
             xp = hx;
             yp = hy;
+          } else if (nextButton.contains(hx, hy)) {
+            if (handInUse == dominantHand) {
+              if (mode == "click") {
+                if (win == true || lose == true) {
+                  hasFinishedGame = true;
+                  nextButton.hide();
+                  //d.background(255);
+                  // SHOW TUTORIAL
+                }
+              }
+              xp = hx;
+              yp = hy;
+            }
           }
         } else if (closingButton.contains(hx, hy)) {
           if (handInUse == dominantHand) {
@@ -648,6 +662,7 @@ const s2 = (d) => {
           if (handInUse == dominantHand) {
             if (mode == "click") {
               // HIDE EVERYTHING
+              selectedMenuButton = false;
               closingButton.hide();
 
               startGame();
@@ -1184,6 +1199,15 @@ const s2 = (d) => {
       d
     );
 
+    nextButton = new Key(
+      375 + 3 * menuOptionSize + menuOptionSize / 2,
+      250,
+      "Næste",
+      menuOptionSize,
+      menuOptionSize / 2,
+      d
+    );
+
     gigantLetter = new Text(
       letterToShow,
       document.getElementById("canvas_draw").offsetWidth / 2,
@@ -1366,8 +1390,9 @@ const s4 = (i) => {
     confirmImage = i.loadImage("Thumbs-up.png");
     rejectImage = i.loadImage("Thumbs-down.png");
     helpScreen = i.loadImage("HelpScreen.png");
-    winScreen = i.loadImage("winGame.png");
-    loseScreen = i.loadImage("loseGame.png");
+    winScreen = i.loadImage("win.png");
+    loseScreen = i.loadImage("lose.png");
+    playAgainScreen = i.loadImage("playAgain.png");
   };
 
   i.setup = () => {
@@ -1434,7 +1459,6 @@ const s4 = (i) => {
         document.getElementById("canvas_image").offsetWidth * 0.6,
         document.documentElement.clientHeight * 0.6
       );
-      hasFinishedGame = true;
     } else if (lose) {
       i.imageMode(i.CENTER);
       i.image(
@@ -1444,7 +1468,15 @@ const s4 = (i) => {
         document.getElementById("canvas_image").offsetWidth * 0.6,
         document.documentElement.clientHeight * 0.6
       );
-      hasFinishedGame = true;
+    } else if (hasFinishedGame) {
+      i.imageMode(i.CENTER);
+      i.image(
+        playAgainScreen,
+        document.getElementById("canvas_image").offsetWidth / 2,
+        document.documentElement.clientHeight / 2,
+        document.getElementById("canvas_image").offsetWidth * 0.6,
+        document.documentElement.clientHeight * 0.6
+      );
     } else {
       processErrorText.show(" ");
       i.clear();
