@@ -1408,7 +1408,7 @@ const s4 = (i) => {
       if (charactersWhiteList.includes(letterToShow)) {
         i.image(
           rejectImage,
-          document.getElementById("canvas_image").offsetWidth / 16,
+          document.getElementById("canvas_image").offsetWidth / 14,
           (document.documentElement.clientHeight / 3) * 1.5,
           250,
           250
