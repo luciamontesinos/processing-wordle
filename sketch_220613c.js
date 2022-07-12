@@ -25,6 +25,7 @@ let rejectImage;
 let resumeGameButton;
 let newGameButton;
 let changeHandButton;
+let nextButton;
 let cursor;
 let eraser;
 let click;
@@ -50,7 +51,7 @@ const numberOfAttempts = 6;
 const wordsPath = "wordlist.csv";
 
 // USEFUL FLAGS
-let currentAttempt = 1;
+let currentAttempt = 6;
 let inGame = false;
 let wordTable;
 let wordList = [];
@@ -688,7 +689,7 @@ const s2 = (d) => {
               currentWord = Array(numberOfLetters).fill("");
               currentMode = Array(numberOfLetters).fill("empty");
               currentLetterWord = 0;
-              currentAttempt = 0;
+              currentAttempt = 1;
               win = false;
               lose = false;
 
@@ -904,7 +905,7 @@ const s2 = (d) => {
             currentWord = Array(numberOfLetters).fill("");
             currentMode = Array(numberOfLetters).fill("empty");
             currentLetterWord = 0;
-            currentAttempt = 0;
+            currentAttempt = 1;
             win = false;
             lose = false;
 
@@ -1200,11 +1201,11 @@ const s2 = (d) => {
     );
 
     nextButton = new Key(
-      375 + 3 * menuOptionSize + menuOptionSize / 2,
-      250,
+      document.getElementById("canvas_draw").offsetWidth / 2,
+      document.documentElement.clientHeight / 2,
       "Næste",
       menuOptionSize,
-      menuOptionSize / 2,
+      menuOptionSize * 0.6,
       d
     );
 
@@ -1459,6 +1460,7 @@ const s4 = (i) => {
         document.getElementById("canvas_image").offsetWidth * 0.6,
         document.documentElement.clientHeight * 0.6
       );
+      nextButton.show("Næste", "-");
     } else if (lose) {
       i.imageMode(i.CENTER);
       i.image(
@@ -1468,6 +1470,7 @@ const s4 = (i) => {
         document.getElementById("canvas_image").offsetWidth * 0.6,
         document.documentElement.clientHeight * 0.6
       );
+      nextButton.show("Næste", "-");
     } else if (hasFinishedGame) {
       i.imageMode(i.CENTER);
       i.image(
