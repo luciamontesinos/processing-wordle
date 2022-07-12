@@ -124,7 +124,7 @@ function startGame() {
   }
 
   let rand = Math.floor(Math.random() * (wordTable.getRowCount() + 1));
-  wordToGuess = wordTable.getString(rand, 0).toUpperCase();
+  wordToGuess = "SANGE"; //wordTable.getString(rand, 0).toUpperCase();
   console.log(wordToGuess);
   dominantHand = "Right";
   nonDominantHand = "Left";
