@@ -8,7 +8,6 @@ let keys = [];
 let menuContainer;
 let canvasContainer;
 let processLetter;
-//let deleteLetterButton;
 let menuButton;
 let gigantLetter;
 let handlee;
@@ -113,8 +112,6 @@ let tesseractWorker;
 // var token; = url.searchParams.get("token");
 // console.log(token);
 
-// SAVE TOKENS
-
 function startGame() {
   // Get random word
   for (let w = 0; w < wordTable.getRowCount(); w++) {
@@ -122,16 +119,10 @@ function startGame() {
   }
 
   let rand = Math.floor(Math.random() * (wordTable.getRowCount() + 1));
-  wordToGuess = "SANGE"; //wordTable.getString(rand, 0).toUpperCase();
+  wordToGuess = wordTable.getString(rand, 0).toUpperCase();
   console.log(wordToGuess);
   dominantHand = "Right";
   nonDominantHand = "Left";
-
-  // while (currentAttempt < numberOfAttempts) {
-  //   if (win == false && lose == true) {
-  //     endGame();
-  //   }
-  // }
 }
 
 function endGame() {
@@ -152,8 +143,6 @@ function endGame() {
 
 function checkWord() {
   // For each element in current word, check and update current mode
-  // CHECK IF WORD IS IN DICTIONARY
-  // if (wordList.includes(wordToCheck.join(''))) {s
   if (!usedWords.includes(wordToCheck.join(""))) {
     // ADD word to usedWords
     usedWords.push(wordToCheck.join(""));
@@ -186,16 +175,7 @@ function checkWord() {
   } else {
     randW = 4; // THE WORD HAS ALREADY BEEN USED
   }
-  // }
-  // else {
 
-  //   console.log("The word is not in the dictionary");
-  // }
-
-  // SHOW
-  // for (let col = 0; col < numberOfLetters; col++) {
-  //   slots[currentAttempt][col].show(currentWord[col], currentMode[col]);
-  // }
   // SHOW WORDS
   for (let row = 0; row < numberOfAttempts; row++) {
     for (let col = 0; col < numberOfLetters; col++) {
@@ -308,13 +288,6 @@ const s1 = (g) => {
       g
     );
 
-    //// DEFINE CONTAINERS
-    //menuContainer = new Container(canvasWidth / 3, canvasWidth / 8, canvasWidth / 2, 2 * canvasHeight / 3, 200, 150, g);
-    //keyboardContainer = new Container(canvasWidth / 9, canvasWidth / 8, canvasWidth / 8, 2 * canvasHeight / 3, 200, 150, g);
-
-    // PAINT CONTENT
-    //menuContainer.show();
-    //keyboardContainer.show();
     g.drawGrid();
 
     if (inGame == false) {
@@ -434,7 +407,6 @@ const s2 = (d) => {
               if (hasCheckedLetter == false) {
                 // HIDE EVERYTHING TO PROCESS
                 processLetter.hide();
-                //deleteLetterButton.hide();
                 helpButton.hide();
                 menuButton.hide();
                 navigateButton.hide();
@@ -502,10 +474,6 @@ const s2 = (d) => {
                       menuButton.show();
                       navigateButton.show();
 
-                      // // MOVE POINTER TO CENTER TO MAKE SURE IT DOESN'T SEND IT AGAIN
-                      // hx = document.getElementById('canvas_draw').offsetWidth / 2;
-                      // hy = document.documentElement.clientHeight
-
                       // PAINT THE LAST LETTER AFTER PAINTING
                       for (let col = 0; col < numberOfLetters; col++) {
                         currentWordRow[col].show(
@@ -554,7 +522,6 @@ const s2 = (d) => {
               closingButton.hide();
 
               // SHOW MENU
-              //closingButton.hide();
               menuContainer.hide();
               newGameButton.hide();
               resumeGameButton.hide();
@@ -568,14 +535,11 @@ const s2 = (d) => {
               d.drawDots();
               menuButton.show();
               processLetter.show();
-              // deleteLetterButton.show();
               helpButton.show();
               navigateButton.show();
               for (let col = 0; col < numberOfLetters; col++) {
                 currentWordRow[col].show(currentWord[col], currentMode[col]);
               }
-
-              // Hide whatever
             }
             xp = hx;
             yp = hy;
@@ -588,26 +552,21 @@ const s2 = (d) => {
               closingButton.hide();
 
               // SHOW MENU
-              //closingButton.hide();
               menuContainer.hide();
               newGameButton.hide();
               resumeGameButton.hide();
               changeHandButton.hide();
 
               // SHOW EVERYTHING AGAIN
-
               d.background(255);
               d.drawDots();
               menuButton.show();
               processLetter.show();
-              // deleteLetterButton.show();
               helpButton.show();
               navigateButton.show();
               for (let col = 0; col < numberOfLetters; col++) {
                 currentWordRow[col].show(currentWord[col], currentMode[col]);
               }
-
-              // Hide whatever
             }
             xp = hx;
             yp = hy;
@@ -653,7 +612,6 @@ const s2 = (d) => {
               startGame();
 
               // SHOW MENU
-              //closingButton.hide();
               menuContainer.hide();
               newGameButton.hide();
               resumeGameButton.hide();
@@ -665,7 +623,6 @@ const s2 = (d) => {
               d.drawDots();
               menuButton.show();
               processLetter.show();
-              // deleteLetterButton.show();
               helpButton.show();
               navigateButton.show();
 
@@ -703,9 +660,7 @@ const s2 = (d) => {
               // HIDE EVERYTHING
               menuButton.hide();
               processLetter.hide();
-              //deleteLetterButton.hide();
               helpButton.hide();
-              //navigateButton.hide();
               for (let col = 0; col < numberOfLetters; col++) {
                 currentWordRow[col].hide();
               }
@@ -756,7 +711,6 @@ const s2 = (d) => {
 
               navigateButton.hide();
               helpButton.hide();
-              //processLetter.hide();
               d.toggle();
               navigateBackButton.show();
             }
@@ -775,7 +729,6 @@ const s2 = (d) => {
               d.drawDots();
               menuButton.show();
               processLetter.show();
-              //deleteLetterButton.show();
               helpButton.show();
               navigateButton.show();
               for (let col = 0; col < numberOfLetters; col++) {
@@ -800,7 +753,6 @@ const s2 = (d) => {
               // Check distance
               if (Math.hypot(xp - hx, yp - hy) < 100) {
                 d.stroke(0, 101, 152);
-                //d.stroke(255, 134, 228);
                 d.strokeWeight(30);
                 d.line(xp, yp, hx, hy);
               }
@@ -848,15 +800,12 @@ const s2 = (d) => {
                 d.drawDots();
                 menuButton.show();
                 processLetter.show();
-                //deleteLetterButton.show();
                 helpButton.show();
                 navigateButton.show();
 
                 for (let col = 0; col < numberOfLetters; col++) {
                   currentWordRow[col].show(currentWord[col], currentMode[col]);
                 }
-
-                // navigateBackButton.show();
               }
             }
           }
@@ -869,7 +818,6 @@ const s2 = (d) => {
             startGame();
 
             // SHOW MENU
-            //closingButton.hide();
             menuContainer.hide();
             newGameButton.hide();
             resumeGameButton.hide();
@@ -881,7 +829,6 @@ const s2 = (d) => {
             d.drawDots();
             menuButton.show();
             processLetter.show();
-            // deleteLetterButton.show();
             helpButton.show();
             navigateButton.show();
 
@@ -927,7 +874,6 @@ const s2 = (d) => {
 
             // SHOW EVERYTHING AGAIN
             processLetter.show();
-            // deleteLetterButton.show();
             helpButton.show();
             menuButton.show();
             navigateButton.show();
@@ -985,7 +931,6 @@ const s2 = (d) => {
           // Check what was the event to cancel
 
           if (hasFinishedGame == true) {
-            // TODO ????
           } else if (hasCheckedLetter == true) {
             // IF THEY REJECT THE LETTER
             gigantLetter.hide();
@@ -996,7 +941,6 @@ const s2 = (d) => {
 
             // SHOW EVERYTHING AGAIN
             processLetter.show();
-            //deleteLetterButton.show();
             helpButton.show();
             menuButton.show();
             navigateButton.show();
@@ -1064,7 +1008,6 @@ const s2 = (d) => {
       "br",
       d
     );
-    //deleteLetterButton = new Button("DELETE\nLETTER", 300, document.documentElement.clientHeight - 150, 200, 28, 'red', 'red', 255, "bl", d);
     menuButton = new Button(
       "Menu",
       document.getElementById("canvas_draw").offsetWidth - 150,
@@ -1141,12 +1084,6 @@ const s2 = (d) => {
       d
     );
 
-    // coords    x,y
-    // text size ts
-    // text      t
-    // fill      f
-    // stroke    s
-    // orientation (top left, top right, top center, bottom left, bottom right bottom center)
     menuOptionSize = document.getElementById("canvas_draw").offsetWidth / 8;
     menuBottomElement = new Text(
       "Dominant hand: " + dominantHand,
@@ -1284,7 +1221,6 @@ const s2 = (d) => {
     hands.onResults(d.onResults);
     // PAINT THE BUTTONS AFTER PAINTING
     processLetter.show();
-    //deleteLetterButton.show();
     menuButton.show();
     helpButton.show();
     navigateButton.show();
