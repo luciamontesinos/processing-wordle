@@ -39,13 +39,13 @@ let nonDominantHand = "Left";
 let menuBottomElement;
 
 // GAME CONFIGURATION
-const characters = "abcdefghijklmnopqrstuvwxyzåæø";
+const characters = "abcdefghijklmnopqrstuvwxy";
 const charactersWhiteList =
-  "abcdefghijklmnopqrstuvwxyzåæøABCDEFGHIJKLMNOPQRSTUVWXYZAÅÆØ";
+  "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 const numberOfLetters = 5;
 const numberOfAttempts = 6;
-const wordsPath = "wordlist.csv";
+const wordsPath = "filtered_words.csv";
 
 // USEFUL FLAGS
 let currentAttempt = 1;
@@ -72,21 +72,20 @@ let letterToShow = "";
 let selectedMenuButton = false;
 let selectedHelpButton = false;
 let openWindow = false;
-let goodLuck = "Held og lykke med dit næste gæt";
-
-let keepTrying = "Kom igen!";
-let niceTry = "Godt forsøgt! Prøv med et nyt ord";
+let goodLuck = "Good luck with your next guess!"// Held og lykke med dit næste gæt";
+let keepTrying = "Keep trying!";//"Kom igen!";
+let niceTry = "Good guess! Try with a new word"; //Godt forsøgt! Prøv med et nyt ord";
 let randomSentences = [
   niceTry,
   keepTrying,
   goodLuck,
-  "",
-  "Du har allerede prøvet med dette ord",
+"",
+  "You have already guessed this word",
 ];
-let systemRecognice = "Vi har genkendt dette bogstav:";
-let isThisLetter = "Svarer det til bogstavet du skrev?";
-let oops = "Ups… Dette bogstav kunne ikke genkendes. Prøv at tegn det igen!";
-let loading = "Genkender bogstav…";
+let systemRecognice = "We have detected: " //Vi har genkendt dette bogstav:";
+let isThisLetter = "Is this the letter?"; //Svarer det til bogstavet du skrev?";
+let oops = "Oops... We can't recognise the letter. Draw it again!"; //"Ups… Dette bogstav kunne ikke genkendes. Prøv at tegn det igen!";
+let loading = "Recognising letter..." ; //Genkender bogstav…";
 let randW = 3;
 let processing = false;
 
@@ -426,7 +425,7 @@ const s2 = (d) => {
                 drawP5.filter(d.THRESHOLD);
                 processing = true;
                 Tesseract.recognize(drawP5.drawingContext.canvas, {
-                  lang: "dan",
+                  lang: "eng",
                   tessedit_pageseg_mode: "10",
                   tessedit_char_whitelist: charactersWhiteList,
                 })
@@ -585,13 +584,13 @@ const s2 = (d) => {
                 dominantHand = "Left";
                 nonDominantHand = "Right";
                 menuContainer.show();
-                menuBottomElement.show("Venstrehåndet");
+                menuBottomElement.show("Left-handed");
               } else if (dominantHand == "Left") {
                 dominantHand = "Right";
                 nonDominantHand = "Left";
                 menuContainer.show();
 
-                menuBottomElement.show("Højrehåndet");
+                menuBottomElement.show("Right-handed");
               }
 
               newGameButton.show("menuButton");
@@ -677,9 +676,9 @@ const s2 = (d) => {
               resumeGameButton.show("menuButton");
               changeHandButton.show("menuButton");
               if (dominantHand == "Left") {
-                menuBottomElement.show("Venstrehåndet");
+                menuBottomElement.show("Left-handed");
               } else if (dominantHand == "Right") {
-                menuBottomElement.show("Højrehåndet");
+                menuBottomElement.show("Right-handed");
               }
 
               for (let col = 0; col < numberOfLetters; col++) {
@@ -997,7 +996,7 @@ const s2 = (d) => {
 
     // DEFINE THE BUTTONS
     processLetter = new Button(
-      "Genkender\nBogstav",
+      "Process letter",
       document.getElementById("canvas_draw").offsetWidth - 150,
       document.documentElement.clientHeight - 150,
       200,
@@ -1021,7 +1020,7 @@ const s2 = (d) => {
       d
     );
     helpButton = new Button(
-      "Hjælp",
+      "Help",
       300,
       document.documentElement.clientHeight - 150,
       200,
@@ -1098,7 +1097,7 @@ const s2 = (d) => {
     resumeGameButton = new Key(
       375 + menuOptionSize / 2,
       250,
-      "Genoptag\nspil",
+      "Resume\ngame",
       menuOptionSize,
       menuOptionSize,
       d
@@ -1107,7 +1106,7 @@ const s2 = (d) => {
       375 + 2 * menuOptionSize,
       250,
 
-      "Nyt\nspil",
+      "New\ngame",
       menuOptionSize,
       menuOptionSize,
       d
@@ -1115,7 +1114,7 @@ const s2 = (d) => {
     changeHandButton = new Key(
       375 + 3 * menuOptionSize + menuOptionSize / 2,
       250,
-      "Skift\nHånd",
+      "Swich\nhand",
       menuOptionSize,
       menuOptionSize,
       d
