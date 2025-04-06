@@ -82,8 +82,8 @@ let randomSentences = [
 "",
   "You have already guessed this word",
 ];
-let systemRecognice = "We have detected: " //Vi har genkendt dette bogstav:";
-let isThisLetter = "Is this the letter?"; //Svarer det til bogstavet du skrev?";
+let systemRecognice = "We have recognized this letter:" //Vi har genkendt dette bogstav:";
+let isThisLetter = "Does it match the letter you drew?"; //Svarer det til bogstavet du skrev?";
 let oops = "Oops... We can't recognise the letter. Draw it again!"; //"Ups… Dette bogstav kunne ikke genkendes. Prøv at tegn det igen!";
 let loading = "Recognising letter..." ; //Genkender bogstav…";
 let randW = 3;
@@ -130,7 +130,7 @@ function endGame() {
   // Stop timer
   if (win == true) {
     finalMessage =
-      "Congratulations! you guessed the word.\n Total attempts:" +
+      "Congratulations! you guessed the word.\nTotal attempts:" +
       String(numberOfAttempts);
   } else {
     lose = true;
@@ -996,7 +996,7 @@ const s2 = (d) => {
 
     // DEFINE THE BUTTONS
     processLetter = new Button(
-      "Process letter",
+      "Process\nletter",
       document.getElementById("canvas_draw").offsetWidth - 150,
       document.documentElement.clientHeight - 150,
       200,
@@ -1298,11 +1298,11 @@ let pointerP5 = new p5(s3, "canvas_pointer");
 
 const s4 = (i) => {
   i.preload = () => {
-    confirmImage = i.loadImage("Thumbs-up.png");
-    rejectImage = i.loadImage("Thumbs-down.png");
-    helpScreen = i.loadImage("HelpScreen.png");
-    winScreen = i.loadImage("winGame.png");
-    loseScreen = i.loadImage("loseGame.png");
+    confirmImage = i.loadImage("Thumbs-upEng.png");
+    rejectImage = i.loadImage("Thumbs-downEng.png");
+    helpScreen = i.loadImage("HelpScreenEng.png");
+    winScreen = i.loadImage("winGameEng.png");
+    loseScreen = i.loadImage("loseGameEng.png");
   };
 
   i.setup = () => {
